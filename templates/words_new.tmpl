@@ -1,0 +1,49 @@
+{{define "title"}}
+  New Word
+{{end}}
+{{define "content"}}
+  <form action="/words/new" method="POST">
+    <div>
+      <label for="word">Word:</label>
+      <input id="word" name="word" type="text">
+    </div>
+
+    <fieldset>
+      <legend>Definitions</legend>
+
+      <div id="definitions">
+        <div class="definition">
+          <div>
+            <label>Pronunciation:</label>
+            <input name="pronunciation" type="text">
+          </div>
+
+          <div>
+            <label>Meaning:</label>
+            <input name="meaning" type="text">
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <button onclick="return addRow()">Add Row</button>
+      </div>
+    </fieldset>
+
+    <div>
+      <input type="submit">
+    </div>
+  </form>
+  <script>
+   function addRow() {
+       var def = document.getElementsByClassName("definition")[0].cloneNode(true);
+       var inputs = def.getElementsByTagName("input");
+       for(i = 0; i < inputs.length; i++) 
+           inputs[i].value = "";
+       document.getElementById("definitions").appendChild(def);
+
+       return false;
+   }
+
+  </script>
+{{end}}

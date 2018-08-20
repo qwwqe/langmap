@@ -1,6 +1,0 @@
-{{define "title"}}
-	 Language Mapper
-{{end}}
-{{define "content"}}
-	 
-{{end}}

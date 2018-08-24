@@ -46,6 +46,9 @@ func (e *Engine) SetupDB() error {
 func (e *Engine) SetupRouter() {
 	e.Router = gin.Default()
 
+	v := VersionMiddleware{Engine: e}
+	e.Router.Use(v.Handler)
+
 	e.Router.HTMLRender = multitemplate.New()
 
 	e.AddService(

@@ -31,12 +31,13 @@ func (e *Engine) SetupDB() error {
 	if err != nil {
 		return err
 	}
-	defer e.DB.Close()
 
 	e.DB.AutoMigrate(&Association{})
 	e.DB.AutoMigrate(&Collection{})
+	e.DB.AutoMigrate(&Definition{})
 	e.DB.AutoMigrate(&Note{})
 	e.DB.AutoMigrate(&Tag{})
+	e.DB.AutoMigrate(&Word{})
 
 	e.DB.LogMode(true)
 
@@ -67,6 +68,7 @@ func (e *Engine) Run() error {
 	if err != nil {
 		return err
 	}
+	defer e.DB.Close()
 
 	e.SetupRouter()
 

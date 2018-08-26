@@ -20,10 +20,9 @@ func (s *WordService) Create(c *gin.Context) {
 	}
 
 	// TODO(dario) check for errors
-	// success:    http.StatusCreated
-	// failure:
-	//  not found: http.StatusBadRequest
-	// 	other:     http.StatusInternalServer
+	// success   = http.StatusCreated
+	// not found = http.StatusBadRequest
+	// other     = http.StatusInternalServer
 	s.Engine.DB.Create(&w)
 
 	// TODO(dario) I don't like hardcoding the path like this. figure it out dynamically.
@@ -44,10 +43,9 @@ func (s *WordService) Delete(c *gin.Context) {
 
 	// TODO(dario) this won't delete definitions. should it? it probably should.
 	// TODO(dario) check for errors
-	// success:    http.StatusNoContent
-	// failure:
-	//  not found: http.StatusBadRequest
-	// 	other:     http.StatusInternalServer
+	// success   = http.StatusNoContent
+	// not found = http.StatusBadRequest
+	// other     = http.StatusInternalServer
 	s.Engine.DB.Delete(&w)
 
 	c.Status(http.StatusNoContent)
@@ -62,10 +60,9 @@ func (s *WordService) Get(c *gin.Context) {
 	}
 
 	// TODO(dario) check for errors
-	// success:    http.StatusOK
-	// failure:
-	//  not found: http.StatusOK
-	// 	other:     http.StatusInternalServer
+	// success   = http.StatusOK
+	// not found = http.StatusOK
+	// other     = http.StatusInternalServer
 	db.Find(&w)
 
 	c.JSON(http.StatusOK, w)
@@ -87,10 +84,9 @@ func (s *WordService) GetOne(c *gin.Context) {
 	}
 
 	// TODO(dario) check for errors
-	// success:    http.StatusOK
-	// failure:
-	//  not found: http.StatusNotFound
-	// 	other:     http.StatusInternalServer
+	// success   = http.StatusOK
+	// not found = http.StatusNotFound
+	// other     = http.StatusInternalServer
 	db.Find(&w, id)
 
 	c.JSON(http.StatusOK, w)
@@ -115,10 +111,9 @@ func (s *WordService) Update(c *gin.Context) {
 	}
 
 	// TODO(dario) check for errors
-	// success:    http.StatusNoContent
-	// failure:
-	//  not found: http.StatusBadRequest
-	// 	other:     http.StatusInternalServer
+	// success   = http.StatusNoContent
+	// not found = http.StatusBadRequest
+	// other     = http.StatusInternalServer
 	s.Engine.DB.Model(&w).Updates(data)
 
 	c.Status(http.StatusNoContent)

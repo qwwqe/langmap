@@ -9,5 +9,5 @@ type Definition struct {
 	WordID        int
 	Word          Word
 	Notes         []*Note        `gorm:"many2many:note_definitions"`
-	Associations  []*Association `gorm:"many2many:association_defintions"`
+	Associations  []*Association `gorm:"many2many:association_definitions"`
 }

@@ -17,15 +17,28 @@ func (s *WordService) Create(c *gin.Context) {
 	w := Word{}
 
 	if err := c.ShouldBindJSON(&w); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":  ErrJsonFailed,
+			"reason": err.Error(),
+		})
 		return
 	}
 
-	// TODO(dario) check for errors
-	// success   = http.StatusCreated
-	// not found = http.StatusBadRequest
-	// other     = http.StatusInternalServer
-	s.Engine.DB.Create(&w)
+	if db := s.Engine.DB.Create(&w); db.Error != nil {
+		if db.RecordNotFound() {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error":   ErrDatabaseNotFound,
+				"reasons": NewErrorsJSON(db.GetErrors()),
+			})
+			return
+		}
+
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   ErrDatabaseFailure,
+			"reasons": NewErrorsJSON(db.GetErrors()),
+		})
+		return
+	}
 
 	c.Writer.Header().Set("Location", filepath.Join(s.Prefix, strconv.FormatInt(int64(w.ID), 10)))
 
@@ -35,7 +48,10 @@ func (s *WordService) Create(c *gin.Context) {
 func (s *WordService) Delete(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 0)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":  ErrInvalidResourceId,
+			"reason": err.Error(),
+		})
 		return
 	}
 
@@ -43,11 +59,21 @@ func (s *WordService) Delete(c *gin.Context) {
 	w.ID = uint(id)
 
 	// TODO(dario) this won't delete definitions. should it? it probably should.
-	// TODO(dario) check for errors
-	// success   = http.StatusNoContent
-	// not found = http.StatusBadRequest
-	// other     = http.StatusInternalServer
-	s.Engine.DB.Delete(&w)
+	if db := s.Engine.DB.Delete(&w); db.Error != nil {
+		if db.RecordNotFound() {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error":   ErrDatabaseNotFound,
+				"reasons": NewErrorsJSON(db.GetErrors()),
+			})
+			return
+		}
+
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   ErrDatabaseFailure,
+			"reasons": NewErrorsJSON(db.GetErrors()),
+		})
+		return
+	}
 
 	c.Status(http.StatusNoContent)
 }
@@ -60,11 +86,13 @@ func (s *WordService) Get(c *gin.Context) {
 		db = db.Preload("Definitions")
 	}
 
-	// TODO(dario) check for errors
-	// success   = http.StatusOK
-	// not found = http.StatusOK
-	// other     = http.StatusInternalServer
-	db.Find(&w)
+	if db := db.Find(&w); db.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   ErrDatabaseFailure,
+			"reasons": NewErrorsJSON(db.GetErrors()),
+		})
+		return
+	}
 
 	c.JSON(http.StatusOK, w)
 	return
@@ -73,7 +101,10 @@ func (s *WordService) Get(c *gin.Context) {
 func (s *WordService) GetOne(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 0)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":  ErrInvalidResourceId,
+			"reason": err.Error(),
+		})
 		return
 	}
 
@@ -84,11 +115,21 @@ func (s *WordService) GetOne(c *gin.Context) {
 		db = db.Preload("Definitions")
 	}
 
-	// TODO(dario) check for errors
-	// success   = http.StatusOK
-	// not found = http.StatusNotFound
-	// other     = http.StatusInternalServer
-	db.Find(&w, id)
+	if db := s.Engine.DB.Find(&w, id); db.Error != nil {
+		if db.RecordNotFound() {
+			c.JSON(http.StatusNotFound, gin.H{
+				"error":   ErrDatabaseNotFound,
+				"reasons": NewErrorsJSON(db.GetErrors()),
+			})
+			return
+		}
+
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   ErrDatabaseFailure,
+			"reasons": NewErrorsJSON(db.GetErrors()),
+		})
+		return
+	}
 
 	c.JSON(http.StatusOK, w)
 	return
@@ -97,7 +138,10 @@ func (s *WordService) GetOne(c *gin.Context) {
 func (s *WordService) Update(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 0)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":  ErrInvalidResourceId,
+			"reason": err.Error(),
+		})
 		return
 	}
 
@@ -107,15 +151,28 @@ func (s *WordService) Update(c *gin.Context) {
 	var data map[string]interface{}
 
 	if err := c.ShouldBindJSON(&data); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":  ErrJsonFailed,
+			"reason": err.Error(),
+		})
 		return
 	}
 
-	// TODO(dario) check for errors
-	// success   = http.StatusNoContent
-	// not found = http.StatusBadRequest
-	// other     = http.StatusInternalServer
-	s.Engine.DB.Model(&w).Updates(data)
+	if db := s.Engine.DB.Model(&w).Updates(data); db.Error != nil {
+		if db.RecordNotFound() {
+			c.JSON(http.StatusNotFound, gin.H{
+				"error":   ErrDatabaseNotFound,
+				"reasons": NewErrorsJSON(db.GetErrors()),
+			})
+			return
+		}
+
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   ErrDatabaseFailure,
+			"reasons": NewErrorsJSON(db.GetErrors()),
+		})
+		return
+	}
 
 	c.Status(http.StatusNoContent)
 }

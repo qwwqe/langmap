@@ -11,8 +11,9 @@ type Config struct {
 }
 
 type DatabaseConfig struct {
-	Driver string
-	Source string
+	Driver  string
+	Source  string
+	LogMode bool
 }
 
 func (c *Config) FromFile(path string) error {

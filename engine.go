@@ -41,7 +41,7 @@ func (e *Engine) SetupDB() error {
 	e.DB.AutoMigrate(&Tag{})
 	e.DB.AutoMigrate(&Word{})
 
-	e.DB.LogMode(true)
+	e.DB.LogMode(e.Config.Database.LogMode)
 
 	return nil
 }

@@ -2,6 +2,7 @@
   "Address": "127.0.0.1:8181",
   "Database": {
     "Driver": "sqlite3",
-    "Source": "extras/database.db"
+    "Source": "extras/database.db",
+    "LogMode": true
   }
 }

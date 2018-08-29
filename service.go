@@ -8,5 +8,8 @@ type Service interface {
 	Get(*gin.Context)
 	GetOne(*gin.Context)
 	Update(*gin.Context)
+
+	// TODO(dario) this should go elsewhere
+	GetPrefix() string
 	Templates() []string
 }

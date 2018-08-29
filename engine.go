@@ -13,7 +13,9 @@ type Engine struct {
 	Router *gin.Engine
 }
 
-func (e *Engine) AddService(g *gin.RouterGroup, s Service) {
+func (e *Engine) AddService(s Service) {
+	g := e.Router.Group(s.GetPrefix())
+
 	g.POST("/", s.Create)
 	g.DELETE("/:id", s.Delete)
 	g.GET("/", s.Get)
@@ -52,15 +54,8 @@ func (e *Engine) SetupRouter() {
 
 	e.Router.HTMLRender = multitemplate.New()
 
-	e.AddService(
-		e.Router.Group("/api/words"),
-		&WordService{Engine: e},
-	)
-
-	e.AddService(
-		e.Router.Group("/api/notes"),
-		&NoteService{Engine: e},
-	)
+	e.AddService(&WordService{Engine: e, Prefix: "/api/words"})
+	e.AddService(&NoteService{Engine: e, Prefix: "/api/notes"})
 }
 
 func (e *Engine) Run() error {

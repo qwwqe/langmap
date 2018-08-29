@@ -2,6 +2,7 @@ package langmap
 
 import (
 	"net/http"
+	"path/filepath"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -9,6 +10,7 @@ import (
 
 type WordService struct {
 	Engine *Engine
+	Prefix string
 }
 
 func (s *WordService) Create(c *gin.Context) {
@@ -25,8 +27,7 @@ func (s *WordService) Create(c *gin.Context) {
 	// other     = http.StatusInternalServer
 	s.Engine.DB.Create(&w)
 
-	// TODO(dario) I don't like hardcoding the path like this. figure it out dynamically.
-	c.Writer.Header().Set("Location", "/api/words/"+strconv.FormatInt(int64(w.ID)))
+	c.Writer.Header().Set("Location", filepath.Join(s.Prefix, strconv.FormatInt(int64(w.ID), 10)))
 
 	c.Status(http.StatusCreated)
 }
@@ -117,6 +118,10 @@ func (s *WordService) Update(c *gin.Context) {
 	s.Engine.DB.Model(&w).Updates(data)
 
 	c.Status(http.StatusNoContent)
+}
+
+func (s *WordService) GetPrefix() string {
+	return s.Prefix
 }
 
 func (s *WordService) Templates() []string {

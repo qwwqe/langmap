@@ -1,6 +1,16 @@
+VERSION = $(shell git describe --tags --always)
+
+CONFIG = extras/config.json
+INPUT = cmd/langmap/main.go
+LDFLAGS = -X github.com/qwwqe/langmap.Version=$(VERSION)
+
+langmap:
+	go build -o $@ -ldflags "$(LDFLAGS)" $(INPUT)
+
 .PHONY: run
 run:
-	go run \
-		--ldflags "-X github.com/qwwqe/langmap.Version=$$(git describe --tags --always)" \
-		cmd/langmap/main.go \
-			-f extras/config.json
+	go run -ldflags "$(LDFLAGS)" $(INPUT) -f $(CONFIG)
+
+.PHONY: clean
+clean:
+	rm -rf langmap

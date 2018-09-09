@@ -18,13 +18,15 @@ func (s *WordService) Create(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&w); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error":  ErrJsonFailed,
-			"reason": err.Error(),
+			"error":   ErrJsonFailed,
+			"reasons": NewErrorsJSON([]error{err}),
 		})
 		return
 	}
 
-	if db := s.Engine.DB.Create(&w); db.Error != nil {
+	db := s.Engine.DB.Scopes(UserLanguage(c))
+
+	if db := db.Create(&w); db.Error != nil {
 		if db.RecordNotFound() {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error":   ErrDatabaseNotFound,
@@ -49,8 +51,8 @@ func (s *WordService) Delete(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 0)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error":  ErrInvalidResourceId,
-			"reason": err.Error(),
+			"error":   ErrInvalidResourceId,
+			"reasons": NewErrorsJSON([]error{err}),
 		})
 		return
 	}
@@ -58,8 +60,9 @@ func (s *WordService) Delete(c *gin.Context) {
 	w := Word{}
 	w.ID = uint(id)
 
-	// TODO(dario) this won't delete definitions. should it? it probably should.
-	if db := s.Engine.DB.Delete(&w); db.Error != nil {
+	db := s.Engine.DB.Scopes(UserLanguage(c))
+
+	if db := db.Delete(&w); db.Error != nil {
 		if db.RecordNotFound() {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error":   ErrDatabaseNotFound,
@@ -80,10 +83,10 @@ func (s *WordService) Delete(c *gin.Context) {
 
 func (s *WordService) Get(c *gin.Context) {
 	w := make([]Word, 0)
-	db := s.Engine.DB
+	db := s.Engine.DB.Scopes(UserLanguage(c))
 
 	if _, ok := c.GetQuery("preload"); ok {
-		db = db.Preload("Definitions")
+		db = db.Preload("Definitions.Usages")
 	}
 
 	if db := db.Find(&w); db.Error != nil {
@@ -102,17 +105,17 @@ func (s *WordService) GetOne(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 0)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error":  ErrInvalidResourceId,
-			"reason": err.Error(),
+			"error":   ErrInvalidResourceId,
+			"reasons": NewErrorsJSON([]error{err}),
 		})
 		return
 	}
 
 	w := Word{}
-	db := s.Engine.DB
+	db := s.Engine.DB.Scopes(UserLanguage(c))
 
 	if _, ok := c.GetQuery("preload"); ok {
-		db = db.Preload("Definitions")
+		db = db.Preload("Definitions.Usages")
 	}
 
 	if db := s.Engine.DB.Find(&w, id); db.Error != nil {
@@ -139,8 +142,8 @@ func (s *WordService) Update(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 0)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error":  ErrInvalidResourceId,
-			"reason": err.Error(),
+			"error":   ErrInvalidResourceId,
+			"reasons": NewErrorsJSON([]error{err}),
 		})
 		return
 	}
@@ -152,13 +155,15 @@ func (s *WordService) Update(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&data); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error":  ErrJsonFailed,
-			"reason": err.Error(),
+			"error":   ErrJsonFailed,
+			"reasons": NewErrorsJSON([]error{err}),
 		})
 		return
 	}
 
-	if db := s.Engine.DB.Model(&w).Updates(data); db.Error != nil {
+	db := s.Engine.DB.Scopes(UserLanguage(c))
+
+	if db := db.Model(&w).Updates(data); db.Error != nil {
 		if db.RecordNotFound() {
 			c.JSON(http.StatusNotFound, gin.H{
 				"error":   ErrDatabaseNotFound,

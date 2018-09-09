@@ -39,6 +39,7 @@ func (e *Engine) SetupDB() error {
 	e.DB.AutoMigrate(&Definition{})
 	e.DB.AutoMigrate(&Note{})
 	e.DB.AutoMigrate(&Tag{})
+	e.DB.AutoMigrate(&Usage{})
 	e.DB.AutoMigrate(&Word{})
 
 	e.DB.LogMode(e.Config.Database.LogMode)

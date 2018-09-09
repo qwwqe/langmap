@@ -20,7 +20,7 @@ func (e *Engine) AddService(s Service) {
 	g.DELETE("/:id", s.Delete)
 	g.GET("/", s.Get)
 	g.GET("/:id", s.GetOne)
-	g.PUT("/:id", s.Update)
+	g.PATCH("/:id", s.Update)
 
 	for _, t := range s.Templates() {
 		e.Router.HTMLRender.(multitemplate.Render).AddFromFiles(t, "templates/base.tmpl", "templates/"+t+".tmpl")
@@ -34,6 +34,10 @@ func (e *Engine) SetupDB() error {
 		return err
 	}
 
+	if e.Config.Database.Driver == "sqlite3" {
+		e.DB.Exec("PRAGMA foreign_keys = ON")
+	}
+
 	e.DB.AutoMigrate(&Association{})
 	e.DB.AutoMigrate(&Collection{})
 	e.DB.AutoMigrate(&Definition{})
@@ -41,6 +45,13 @@ func (e *Engine) SetupDB() error {
 	e.DB.AutoMigrate(&Tag{})
 	e.DB.AutoMigrate(&Usage{})
 	e.DB.AutoMigrate(&Word{})
+
+	e.DB.Model(&Word{}).AddUniqueIndex(
+		"idx_word_language_user",
+		"word",
+		"language_code",
+		"user_id",
+	)
 
 	e.DB.LogMode(e.Config.Database.LogMode)
 
@@ -51,12 +62,15 @@ func (e *Engine) SetupRouter() {
 	e.Router = gin.Default()
 
 	v := VersionMiddleware{Engine: e}
-	e.Router.Use(v.Handler)
+	a := AuthMiddleware{Engine: e}
+	e.Router.Use(v.Handler, a.Handler)
 
 	e.Router.HTMLRender = multitemplate.New()
 
-	e.AddService(&WordService{Engine: e, Prefix: "/api/words"})
+	e.AddService(&DefinitionService{Engine: e, Prefix: "/api/definitions"})
 	e.AddService(&NoteService{Engine: e, Prefix: "/api/notes"})
+	e.AddService(&UsageService{Engine: e, Prefix: "/api/usages"})
+	e.AddService(&WordService{Engine: e, Prefix: "/api/words"})
 }
 
 func (e *Engine) Run() error {

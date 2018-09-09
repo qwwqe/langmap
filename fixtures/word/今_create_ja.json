@@ -1,4 +1,6 @@
 {
+  "UserId": 1,
+  "LanguageCode": "ja-JP",
   "Word": "今",
   "Definitions": [
     {"Meaning": "the current ...; this",                              "Pronunciation": "こん"},

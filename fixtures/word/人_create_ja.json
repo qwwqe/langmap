@@ -1,4 +1,6 @@
 {
+  "UserId": 1,
+  "LanguageCode": "ja-JP",
   "Word": "人",
   "Definitions": [
     {"Meaning": "man; person",                               "Pronunciation": "ひと"},

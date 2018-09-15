@@ -1,6 +1,6 @@
 package langmap
 
-type User struct {
+type DefinitionLinkType struct {
 	Id   uint
 	Name string
 }

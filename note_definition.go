@@ -1,8 +1,8 @@
 package langmap
 
-type Usage struct {
+type NoteDefinition struct {
 	Id           uint
-	CorpusId     uint
+	NoteId       uint
 	DefinitionId uint
 	InstanceId   uint
 }

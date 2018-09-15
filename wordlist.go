@@ -1,6 +1,6 @@
 package langmap
 
-type Collection struct {
+type Wordlist struct {
 	Id         uint
 	Name       string
 	InstanceId uint

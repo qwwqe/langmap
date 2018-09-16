@@ -44,7 +44,7 @@ func (d *Definition) FromMap(m map[string]interface{}) {
 	for k, v := range m {
 		switch k {
 		case "id":
-			d.Id = v.(uint)
+			d.Id = uint(v.(float64))
 
 		case "pronunciation":
 			d.Pronunciation = v.(string)
@@ -53,10 +53,10 @@ func (d *Definition) FromMap(m map[string]interface{}) {
 			d.Meaning = v.(string)
 
 		case "word_id":
-			d.WordId = v.(uint)
+			d.WordId = uint(v.(float64))
 
 		case "instance_id":
-			d.InstanceId = v.(uint)
+			d.InstanceId = uint(v.(float64))
 
 		}
 	}

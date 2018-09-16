@@ -134,7 +134,7 @@ func (s *DefinitionService) Update(c *gin.Context) {
 
 	d := &Definition{Id: uint(id)}
 
-	if err := s.Engine.DbMap.SelectOne(&d, "select * from definitions where id = $1", id); err != nil {
+	if err := s.Engine.DbMap.SelectOne(d, "select * from definitions where id = $1", id); err != nil {
 		if err == sql.ErrNoRows {
 			c.JSON(http.StatusNotFound, gin.H{
 				"reason": ErrDatabaseNotFound,

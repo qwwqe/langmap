@@ -50,7 +50,7 @@ func (s *WordService) Delete(c *gin.Context) {
 
 	w := Word{}
 
-	if err := s.Engine.DbMap.SelectOne(&w, "select * from words where id = $1", id); err != nil {
+	if err := s.Engine.DbMap.SelectOne(&w, "select id from words where id = $1", id); err != nil {
 		if err == sql.ErrNoRows {
 			c.JSON(http.StatusNotFound, gin.H{
 				"reason": ErrDatabaseNotFound,
@@ -134,7 +134,7 @@ func (s *WordService) Update(c *gin.Context) {
 
 	w := &Word{Id: uint(id)}
 
-	if err := s.Engine.DbMap.SelectOne(&w, "select * from words where id = $1", id); err != nil {
+	if err := s.Engine.DbMap.SelectOne(w, "select * from words where id = $1", id); err != nil {
 		if err == sql.ErrNoRows {
 			c.JSON(http.StatusNotFound, gin.H{
 				"reason": ErrDatabaseNotFound,

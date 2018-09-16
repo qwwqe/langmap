@@ -134,7 +134,7 @@ func (s *UsageService) Update(c *gin.Context) {
 
 	u := &Usage{Id: uint(id)}
 
-	if err := s.Engine.DbMap.SelectOne(&u, "select * from usages where id = $1", id); err != nil {
+	if err := s.Engine.DbMap.SelectOne(u, "select * from usages where id = $1", id); err != nil {
 		if err == sql.ErrNoRows {
 			c.JSON(http.StatusNotFound, gin.H{
 				"reason": ErrDatabaseNotFound,

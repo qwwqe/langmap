@@ -1,8 +1,8 @@
 package langmap
 
 type NoteCollection struct {
-	Id           uint
-	CollectionId uint
-	NoteId       uint
-	InstanceId   uint
+	Id           uint `db:"id"`
+	CollectionId uint `db:"collection_id"`
+	NoteId       uint `db:"note_id"`
+	InstanceId   uint `db:"instance_id"`
 }

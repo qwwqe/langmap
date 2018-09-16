@@ -1,8 +1,8 @@
 package langmap
 
 type CorpusTag struct {
-	Id         uint
-	CorpusId   uint
-	TagId      uint
-	InstanceId uint
+	Id         uint `db:"id"`
+	CorpusId   uint `db:"corpus_id"`
+	TagId      uint `db:"tag_id"`
+	InstanceId uint `db:"instance_id"`
 }

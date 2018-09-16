@@ -1,5 +1,11 @@
 package langmap
 
+import (
+	"database/sql"
+
+	"github.com/go-gorp/gorp"
+)
+
 type Definition struct {
 	Id            uint   `json:"id" db:"id"`
 	Pronunciation string `json:"pronunciation" db:"pronunciation"`
@@ -32,4 +38,26 @@ func (d *Definition) PreInsert(s gorp.SqlExecutor) error {
 	}
 
 	return nil
+}
+
+func (d *Definition) FromMap(m map[string]interface{}) {
+	for k, v := range m {
+		switch k {
+		case "id":
+			d.Id = v.(uint)
+
+		case "pronunciation":
+			d.Pronunciation = v.(string)
+
+		case "meaning":
+			d.Meaning = v.(string)
+
+		case "word_id":
+			d.WordId = v.(uint)
+
+		case "instance_id":
+			d.InstanceId = v.(uint)
+
+		}
+	}
 }

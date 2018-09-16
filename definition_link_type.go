@@ -1,6 +1,6 @@
 package langmap
 
 type DefinitionLinkType struct {
-	Id   uint
-	Name string
+	Id   uint   `db:"id"`
+	Name string `db:"name"`
 }

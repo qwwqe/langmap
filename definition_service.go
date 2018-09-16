@@ -1,6 +1,7 @@
 package langmap
 
 import (
+	"database/sql"
 	"net/http"
 	"path/filepath"
 	"strconv"
@@ -18,31 +19,21 @@ func (s *DefinitionService) Create(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&d); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error":   ErrJsonFailed,
-			"reasons": NewErrorsJSON([]error{err}),
+			"reason": ErrJsonFailed,
+			"errors": NewErrorsJSON([]error{err}),
 		})
 		return
 	}
 
-	db := s.Engine.DB.Scopes(UserLanguage(c))
-
-	if db := db.Create(&d); db.Error != nil {
-		if db.RecordNotFound() {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error":   ErrDatabaseNotFound,
-				"reasons": NewErrorsJSON(db.GetErrors()),
-			})
-			return
-		}
-
+	if err := s.Engine.DbMap.Insert(&d); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error":   ErrDatabaseFailure,
-			"reasons": NewErrorsJSON(db.GetErrors()),
+			"reason": ErrDatabaseFailure,
+			"errors": NewErrorsJSON([]error{err}),
 		})
 		return
 	}
 
-	c.Writer.Header().Set("Location", filepath.Join(s.Prefix, strconv.FormatInt(int64(d.ID), 10)))
+	c.Writer.Header().Set("Location", filepath.Join(s.Prefix, strconv.FormatInt(int64(d.Id), 10)))
 
 	c.Status(http.StatusCreated)
 }
@@ -51,29 +42,34 @@ func (s *DefinitionService) Delete(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 0)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error":   ErrInvalidResourceId,
-			"reasons": NewErrorsJSON([]error{err}),
+			"reason": ErrInvalidResourceId,
+			"errors": NewErrorsJSON([]error{err}),
 		})
 		return
 	}
 
 	d := Definition{}
-	d.ID = uint(id)
 
-	db := s.Engine.DB.Scopes(UserLanguage(c))
-
-	if db := db.Delete(&d); db.Error != nil {
-		if db.RecordNotFound() {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error":   ErrDatabaseNotFound,
-				"reasons": NewErrorsJSON(db.GetErrors()),
+	if err := s.Engine.DbMap.SelectOne(&d, "select id from definitions where id = $1", id); err != nil {
+		if err == sql.ErrNoRows {
+			c.JSON(http.StatusNotFound, gin.H{
+				"reason": ErrDatabaseNotFound,
+				"errors": NewErrorsJSON([]error{err}),
 			})
 			return
 		}
 
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error":   ErrDatabaseFailure,
-			"reasons": NewErrorsJSON(db.GetErrors()),
+			"reason": ErrDatabaseFailure,
+			"errors": NewErrorsJSON([]error{err}),
+		})
+		return
+	}
+
+	if _, err := s.Engine.DbMap.Delete(&d); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"reason": ErrDatabaseFailure,
+			"errors": NewErrorsJSON([]error{err}),
 		})
 		return
 	}
@@ -82,99 +78,94 @@ func (s *DefinitionService) Delete(c *gin.Context) {
 }
 
 func (s *DefinitionService) Get(c *gin.Context) {
-	d := make([]Definition, 0)
-	db := s.Engine.DB.Scopes(UserLanguage(c))
+	var d []Definition
 
-	if _, ok := c.GetQuery("preload"); ok {
-		db = db.Preload("Usages").Preload("Word")
-	}
-
-	if db := db.Find(&d); db.Error != nil {
+	if _, err := s.Engine.DbMap.Select(&d, "select * from definitions"); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error":   ErrDatabaseFailure,
-			"reasons": NewErrorsJSON(db.GetErrors()),
+			"reason": ErrDatabaseFailure,
+			"errors": NewErrorsJSON([]error{err}),
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, d)
-	return
+	c.JSON(http.StatusOK, gin.H{"data": d})
 }
 
 func (s *DefinitionService) GetOne(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 0)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error":   ErrInvalidResourceId,
-			"reasons": NewErrorsJSON([]error{err}),
+			"reason": ErrInvalidResourceId,
+			"errors": NewErrorsJSON([]error{err}),
 		})
 		return
 	}
 
 	d := Definition{}
-	db := s.Engine.DB.Scopes(UserLanguage(c))
 
-	if _, ok := c.GetQuery("preload"); ok {
-		db = db.Preload("Usages").Preload("Word")
-	}
-
-	if db := s.Engine.DB.Find(&d, id); db.Error != nil {
-		if db.RecordNotFound() {
+	if err := s.Engine.DbMap.SelectOne(&d, "select * from definitions where id = $1", id); err != nil {
+		if err == sql.ErrNoRows {
 			c.JSON(http.StatusNotFound, gin.H{
-				"error":   ErrDatabaseNotFound,
-				"reasons": NewErrorsJSON(db.GetErrors()),
+				"reason": ErrDatabaseNotFound,
+				"errors": NewErrorsJSON([]error{err}),
 			})
 			return
 		}
 
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error":   ErrDatabaseFailure,
-			"reasons": NewErrorsJSON(db.GetErrors()),
+			"reason": ErrDatabaseFailure,
+			"errors": NewErrorsJSON([]error{err}),
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, d)
-	return
+	c.JSON(http.StatusOK, gin.H{"data": d})
 }
 
 func (s *DefinitionService) Update(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 0)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error":   ErrInvalidResourceId,
-			"reasons": NewErrorsJSON([]error{err}),
+			"reason": ErrInvalidResourceId,
+			"errors": NewErrorsJSON([]error{err}),
 		})
 		return
 	}
 
-	d := Definition{}
-	d.ID = uint(id)
+	d := &Definition{Id: uint(id)}
 
-	var data map[string]interface{}
-
-	if err := c.ShouldBindJSON(&data); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error":   ErrJsonFailed,
-			"reasons": NewErrorsJSON([]error{err}),
-		})
-		return
-	}
-
-	db := s.Engine.DB.Scopes(UserLanguage(c))
-
-	if db := db.Model(&d).Updates(data); db.Error != nil {
-		if db.RecordNotFound() {
+	if err := s.Engine.DbMap.SelectOne(&d, "select * from definitions where id = $1", id); err != nil {
+		if err == sql.ErrNoRows {
 			c.JSON(http.StatusNotFound, gin.H{
-				"error":   ErrDatabaseNotFound,
-				"reasons": NewErrorsJSON(db.GetErrors()),
+				"reason": ErrDatabaseNotFound,
+				"errors": NewErrorsJSON([]error{err}),
 			})
 			return
 		}
 
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error":   ErrDatabaseFailure,
-			"reasons": NewErrorsJSON(db.GetErrors()),
+			"reason": ErrDatabaseFailure,
+			"errors": NewErrorsJSON([]error{err}),
+		})
+		return
+	}
+
+	var data map[string]interface{}
+
+	if err := c.ShouldBindJSON(&data); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"reason": ErrJsonFailed,
+			"errors": NewErrorsJSON([]error{err}),
+		})
+		return
+	}
+
+	d.FromMap(data)
+
+	if _, err := s.Engine.DbMap.Update(d); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"reason": ErrDatabaseFailure,
+			"errors": NewErrorsJSON([]error{err}),
 		})
 		return
 	}

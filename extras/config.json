@@ -1,8 +1,8 @@
 {
-  "Address": "127.0.0.1:8181",
+  "Address": ":8181",
   "Database": {
-    "Driver": "sqlite3",
-    "Source": "extras/database.db",
+    "Driver": "postgres",
+    "Source": "user=postgres dbname=postgres host=localhost port=5432 sslmode=disable",
     "LogMode": true
   }
 }

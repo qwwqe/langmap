@@ -1,9 +1,9 @@
 package langmap
 
 type Corpus struct {
-	Id         uint
-	Name       string
-	MD5        string
-	Browsable  string
-	InstanceId uint
+	Id         uint   `db:"id"`
+	Name       string `db:"name"`
+	MD5        string `db:"md_5"`
+	Browsable  string `db:"browsable"`
+	InstanceId uint   `db:"instance_id"`
 }

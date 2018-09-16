@@ -1,7 +1,7 @@
 package langmap
 
 type Collection struct {
-	Id         uint
-	Name       string
-	InstanceId uint
+	Id         uint   `db:"id"`
+	Name       string `db:"name"`
+	InstanceId uint   `db:"instance_id"`
 }

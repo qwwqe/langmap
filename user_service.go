@@ -10,16 +10,16 @@ import (
 	"github.com/go-gorp/gorp"
 )
 
-type WordService struct {
+type UserService struct {
 	Engine *Engine
 	Prefix string
 	Table  *gorp.TableMap
 }
 
-func (s *WordService) Create(c *gin.Context) {
-	w := Word{}
+func (s *UserService) Create(c *gin.Context) {
+	u := User{}
 
-	if err := c.ShouldBindJSON(&w); err != nil {
+	if err := c.ShouldBindJSON(&u); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"reason": ErrJsonFailed,
 			"errors": NewErrorsJSON([]error{err}),
@@ -27,7 +27,7 @@ func (s *WordService) Create(c *gin.Context) {
 		return
 	}
 
-	if err := s.Engine.DbMap.Insert(&w); err != nil {
+	if err := s.Engine.DbMap.Insert(&u); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"reason": ErrDatabaseFailure,
 			"errors": NewErrorsJSON([]error{err}),
@@ -35,12 +35,12 @@ func (s *WordService) Create(c *gin.Context) {
 		return
 	}
 
-	c.Writer.Header().Set("Location", filepath.Join(s.Prefix, strconv.FormatInt(int64(w.Id), 10)))
+	c.Writer.Header().Set("Location", filepath.Join(s.Prefix, strconv.FormatInt(int64(u.Id), 10)))
 
 	c.Status(http.StatusCreated)
 }
 
-func (s *WordService) Delete(c *gin.Context) {
+func (s *UserService) Delete(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 0)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -50,9 +50,9 @@ func (s *WordService) Delete(c *gin.Context) {
 		return
 	}
 
-	w := Word{}
+	u := User{}
 
-	if err := s.Engine.DbMap.SelectOne(&w, "select id from "+s.Table.TableName+" where id = $1", id); err != nil {
+	if err := s.Engine.DbMap.SelectOne(&u, "select id from users where id = $1", id); err != nil {
 		if err == sql.ErrNoRows {
 			c.JSON(http.StatusNotFound, gin.H{
 				"reason": ErrDatabaseNotFound,
@@ -68,7 +68,7 @@ func (s *WordService) Delete(c *gin.Context) {
 		return
 	}
 
-	if _, err := s.Engine.DbMap.Delete(&w); err != nil {
+	if _, err := s.Engine.DbMap.Delete(&u); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"reason": ErrDatabaseFailure,
 			"errors": NewErrorsJSON([]error{err}),
@@ -79,10 +79,10 @@ func (s *WordService) Delete(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-func (s *WordService) Get(c *gin.Context) {
-	var w []Word
+func (s *UserService) Get(c *gin.Context) {
+	var u []User
 
-	if _, err := s.Engine.DbMap.Select(&w, "select * from "+s.Table.TableName); err != nil {
+	if _, err := s.Engine.DbMap.Select(&u, "select * from users"); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"reason": ErrDatabaseFailure,
 			"errors": NewErrorsJSON([]error{err}),
@@ -90,10 +90,10 @@ func (s *WordService) Get(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": w})
+	c.JSON(http.StatusOK, gin.H{"data": u})
 }
 
-func (s *WordService) GetOne(c *gin.Context) {
+func (s *UserService) GetOne(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 0)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -103,9 +103,9 @@ func (s *WordService) GetOne(c *gin.Context) {
 		return
 	}
 
-	w := Word{}
+	u := User{}
 
-	if err := s.Engine.DbMap.SelectOne(&w, "select * from "+s.Table.TableName+" where id = $1", id); err != nil {
+	if err := s.Engine.DbMap.SelectOne(&u, "select * from users where id = $1", id); err != nil {
 		if err == sql.ErrNoRows {
 			c.JSON(http.StatusNotFound, gin.H{
 				"reason": ErrDatabaseNotFound,
@@ -121,10 +121,10 @@ func (s *WordService) GetOne(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": w})
+	c.JSON(http.StatusOK, gin.H{"data": u})
 }
 
-func (s *WordService) Update(c *gin.Context) {
+func (s *UserService) Update(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 0)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -134,9 +134,9 @@ func (s *WordService) Update(c *gin.Context) {
 		return
 	}
 
-	w := &Word{Id: uint(id)}
+	u := &User{Id: uint(id)}
 
-	if err := s.Engine.DbMap.SelectOne(w, "select * from "+s.Table.TableName+" where id = $1", id); err != nil {
+	if err := s.Engine.DbMap.SelectOne(u, "select * from words where id = $1", id); err != nil {
 		if err == sql.ErrNoRows {
 			c.JSON(http.StatusNotFound, gin.H{
 				"reason": ErrDatabaseNotFound,
@@ -162,9 +162,9 @@ func (s *WordService) Update(c *gin.Context) {
 		return
 	}
 
-	w.FromMap(data)
+	u.FromMap(data)
 
-	if _, err := s.Engine.DbMap.Update(w); err != nil {
+	if _, err := s.Engine.DbMap.Update(u); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"reason": ErrDatabaseFailure,
 			"errors": NewErrorsJSON([]error{err}),
@@ -175,10 +175,10 @@ func (s *WordService) Update(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-func (s *WordService) GetPrefix() string {
+func (s *UserService) GetPrefix() string {
 	return s.Prefix
 }
 
-func (s *WordService) Templates() []string {
+func (s *UserService) Templates() []string {
 	return []string{}
 }

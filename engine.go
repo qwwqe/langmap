@@ -33,7 +33,10 @@ func (e *Engine) AddService(s Service) {
 	}
 }
 
-func (e *Engine) SetupDB() error {
+func (e *Engine) Run() error {
+
+	// Setup DB
+
 	e.DbMap = &gorp.DbMap{
 		Dialect: gorp.SqliteDialect{},
 	}
@@ -48,6 +51,7 @@ func (e *Engine) SetupDB() error {
 	}
 
 	var err error
+
 	e.DbMap.Db, err = sql.Open(e.Config.Database.Driver, e.Config.Database.Source)
 	if err != nil {
 		return errors.New(fmt.Sprintf("failed to open %s database at %s: %s", e.Config.Database.Driver, e.Config.Database.Source, err.Error()))
@@ -148,33 +152,53 @@ func (e *Engine) SetupDB() error {
 	if e.Config.Database.LogMode {
 		e.DbMap.TraceOn("[gorp]", log.New(os.Stdout, "langsuite:", log.Lmicroseconds))
 	}
+	defer e.DbMap.Db.Close()
 
-	return nil
-}
+	// Setup Router
 
-func (e *Engine) SetupRouter() {
 	e.Router = gin.Default()
 
 	v := VersionMiddleware{Engine: e}
 	a := AuthMiddleware{Engine: e}
-	e.Router.Use(v.Handler, a.Handler)
+
+	e.Router.Use(
+		v.Handler,
+		a.Handler,
+	)
 
 	e.Router.HTMLRender = multitemplate.New()
 
-	e.AddService(&DefinitionService{Engine: e, Prefix: "/api/definitions"})
-	e.AddService(&NoteService{Engine: e, Prefix: "/api/notes"})
-	e.AddService(&UsageService{Engine: e, Prefix: "/api/usages"})
-	e.AddService(&WordService{Engine: e, Prefix: "/api/words"})
-}
+	e.AddService(&DefinitionService{
+		Engine: e,
+		Prefix: "/api/definitions",
+		Table:  definitions,
+	})
 
-func (e *Engine) Run() error {
-	err := e.SetupDB()
-	if err != nil {
-		return err
-	}
-	defer e.DbMap.Db.Close()
+	e.AddService(&NoteService{
+		Engine: e,
+		Prefix: "/api/notes",
+		Table:  notes,
+	})
 
-	e.SetupRouter()
+	e.AddService(&UsageService{
+		Engine: e,
+		Prefix: "/api/usages",
+		Table:  usages,
+	})
+
+	e.AddService(&WordService{
+		Engine: e,
+		Prefix: "/api/words",
+		Table:  words,
+	})
+
+	e.AddService(&UserService{
+		Engine: e,
+		Prefix: "/api/users",
+		Table:  users,
+	})
+
+	// Run
 
 	e.Router.Run(e.Config.Address)
 

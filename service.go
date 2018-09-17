@@ -1,6 +1,8 @@
 package langmap
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+)
 
 type Service interface {
 	Create(*gin.Context)

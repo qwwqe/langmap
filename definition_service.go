@@ -7,11 +7,13 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-gorp/gorp"
 )
 
 type DefinitionService struct {
 	Engine *Engine
 	Prefix string
+	Table  *gorp.TableMap
 }
 
 func (s *DefinitionService) Create(c *gin.Context) {
@@ -50,7 +52,7 @@ func (s *DefinitionService) Delete(c *gin.Context) {
 
 	d := Definition{}
 
-	if err := s.Engine.DbMap.SelectOne(&d, "select id from definitions where id = $1", id); err != nil {
+	if err := s.Engine.DbMap.SelectOne(&d, "select id from "+s.Table.TableName+" where id = $1", id); err != nil {
 		if err == sql.ErrNoRows {
 			c.JSON(http.StatusNotFound, gin.H{
 				"reason": ErrDatabaseNotFound,
@@ -80,7 +82,7 @@ func (s *DefinitionService) Delete(c *gin.Context) {
 func (s *DefinitionService) Get(c *gin.Context) {
 	var d []Definition
 
-	if _, err := s.Engine.DbMap.Select(&d, "select * from definitions"); err != nil {
+	if _, err := s.Engine.DbMap.Select(&d, "select * from "+s.Table.TableName); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"reason": ErrDatabaseFailure,
 			"errors": NewErrorsJSON([]error{err}),
@@ -103,7 +105,7 @@ func (s *DefinitionService) GetOne(c *gin.Context) {
 
 	d := Definition{}
 
-	if err := s.Engine.DbMap.SelectOne(&d, "select * from definitions where id = $1", id); err != nil {
+	if err := s.Engine.DbMap.SelectOne(&d, "select * from "+s.Table.TableName+" where id = $1", id); err != nil {
 		if err == sql.ErrNoRows {
 			c.JSON(http.StatusNotFound, gin.H{
 				"reason": ErrDatabaseNotFound,
@@ -134,7 +136,7 @@ func (s *DefinitionService) Update(c *gin.Context) {
 
 	d := &Definition{Id: uint(id)}
 
-	if err := s.Engine.DbMap.SelectOne(d, "select * from definitions where id = $1", id); err != nil {
+	if err := s.Engine.DbMap.SelectOne(d, "select * from "+s.Table.TableName+" where id = $1", id); err != nil {
 		if err == sql.ErrNoRows {
 			c.JSON(http.StatusNotFound, gin.H{
 				"reason": ErrDatabaseNotFound,

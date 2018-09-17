@@ -1,13 +1,27 @@
 package langmap
 
-import "github.com/jinzhu/gorm"
-
 type Note struct {
-	gorm.Model
-	Title       string
-	Type        int
-	Comments    []Comment
-	Definitions []*Definition `gorm:"many2many:note_definitions"`
-	Tags        []*Tag        `gorm:"many2many:note_tags"`
-	Collections []*Collection `gorm:"many2many:note_collections"`
+	Id         uint   `db:"id" json:"id"`
+	Title      string `db:"title" json:"title"`
+	Comment    string `db:"comment" json:"comment"`
+	InstanceId uint   `db:"instance_id" json:"instance_id"`
+}
+
+func (n *Note) FromMap(m map[string]interface{}) {
+	for k, v := range m {
+		switch k {
+		case "id":
+			n.Id = uint(v.(float64))
+
+		case "title":
+			n.Title = v.(string)
+
+		case "comment":
+			n.Comment = v.(string)
+
+		case "instance_id":
+			n.InstanceId = uint(v.(float64))
+
+		}
+	}
 }

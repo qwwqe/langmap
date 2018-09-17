@@ -1,22 +1,19 @@
 package langmap
 
-import (
-	"github.com/jinzhu/gorm"
-)
-
 type Word struct {
-	gorm.Model
-	User
-	Word        string       `gorm:"NOT NULL"`
-	Definitions []Definition `json:",omitempty"`
+	Id   uint   `db:"id" json:"id"`
+	Word string `db:"word" json:"word"`
 }
 
-func (w *Word) BeforeDelete(t *gorm.DB) error {
-	db := t.Where("word_id = ?", w.ID).Delete(&Definition{})
+func (w *Word) FromMap(m map[string]interface{}) {
+	for k, v := range m {
+		switch k {
+		case "id":
+			w.Id = uint(v.(float64))
 
-	if db.Error != nil {
-		return db.Error
+		case "word":
+			w.Word = v.(string)
+
+		}
 	}
-
-	return nil
 }

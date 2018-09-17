@@ -1,8 +1,6 @@
 package langmap
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -11,11 +9,11 @@ type AuthMiddleware struct {
 }
 
 func (m *AuthMiddleware) Handler(c *gin.Context) {
-	_, user := c.Request.Header["User-Id"]
-	_, lang := c.Request.Header["Language-Code"]
+	// _, user := c.Request.Header["User-Id"]
+	// _, lang := c.Request.Header["Language-Code"]
 
-	if !user || !lang {
-		c.Status(http.StatusBadRequest)
-		c.Abort()
-	}
+	// if !user || !lang {
+	// 	c.Status(http.StatusBadRequest)
+	// 	c.Abort()
+	// }
 }

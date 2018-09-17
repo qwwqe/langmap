@@ -1,8 +1,8 @@
 package langmap
 
 type User struct {
-	Id   uint   `db:"id"`
-	Name string `db:"name"`
+	Id   uint   `db:"id" json:"id"`
+	Name string `db:"name" json:"name"`
 }
 
 func (u *User) FromMap(m map[string]interface{}) {

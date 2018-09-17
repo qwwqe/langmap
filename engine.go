@@ -198,6 +198,12 @@ func (e *Engine) Run() error {
 		Table:  users,
 	})
 
+	e.AddService(&LanguageService{
+		Engine: e,
+		Prefix: "/api/languages",
+		Table:  languages,
+	})
+
 	// Run
 
 	e.Router.Run(e.Config.Address)

@@ -204,6 +204,12 @@ func (e *Engine) Run() error {
 		Table:  languages,
 	})
 
+	e.AddService(&InstanceService{
+		Engine: e,
+		Prefix: "/api/instances",
+		Table:  instances,
+	})
+
 	// Run
 
 	e.Router.Run(e.Config.Address)

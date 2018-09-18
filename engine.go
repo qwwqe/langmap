@@ -41,6 +41,10 @@ func (e *Engine) Run() error {
 		Dialect: gorp.SqliteDialect{},
 	}
 
+	if e.Config.Database.LogMode {
+		e.DbMap.TraceOn("[gorp]", log.New(os.Stdout, "langsuite:", log.Lmicroseconds))
+	}
+
 	switch e.Config.Database.Driver {
 	case "sqlite3":
 		e.DbMap.Dialect = gorp.SqliteDialect{}
@@ -56,35 +60,43 @@ func (e *Engine) Run() error {
 	if err != nil {
 		return errors.New(fmt.Sprintf("failed to open %s database at %s: %s", e.Config.Database.Driver, e.Config.Database.Source, err.Error()))
 	}
+	defer e.DbMap.Db.Close()
 
 	var (
-		collection_tags       = e.DbMap.AddTableWithName(CollectionTag{}, "collection_tags").SetKeys(true, "Id")
-		collections           = e.DbMap.AddTableWithName(Collection{}, "collections").SetKeys(true, "Id")
-		corpus_tags           = e.DbMap.AddTableWithName(CorpusTag{}, "corpus_tags").SetKeys(true, "Id")
-		corpus_words          = e.DbMap.AddTableWithName(CorpusWord{}, "corpus_words").SetKeys(true, "Id")
-		corpora               = e.DbMap.AddTableWithName(Corpus{}, "corpora").SetKeys(true, "Id")
-		definition_link_types = e.DbMap.AddTableWithName(DefinitionLinkType{}, "definition_link_types").SetKeys(true, "Id")
-		definition_links      = e.DbMap.AddTableWithName(DefinitionLink{}, "definition_links").SetKeys(true, "Id")
-		definitions           = e.DbMap.AddTableWithName(Definition{}, "definitions").SetKeys(true, "Id")
-		highlights            = e.DbMap.AddTableWithName(Highlight{}, "highlights").SetKeys(true, "Id")
-		instances             = e.DbMap.AddTableWithName(Instance{}, "instances").SetKeys(true, "Id")
-		languages             = e.DbMap.AddTableWithName(Language{}, "languages").SetKeys(true, "Id")
-		lexica                = e.DbMap.AddTableWithName(Lexica{}, "lexica").SetKeys(true, "Id")
-		note_collections      = e.DbMap.AddTableWithName(NoteCollection{}, "note_collections").SetKeys(true, "Id")
-		note_definitions      = e.DbMap.AddTableWithName(NoteDefinition{}, "note_definitions").SetKeys(true, "Id")
-		note_tags             = e.DbMap.AddTableWithName(NoteTag{}, "note_tags").SetKeys(true, "Id")
-		notes                 = e.DbMap.AddTableWithName(Note{}, "notes").SetKeys(true, "Id")
-		tags                  = e.DbMap.AddTableWithName(Tag{}, "tags").SetKeys(true, "Id")
-		usages                = e.DbMap.AddTableWithName(Usage{}, "usages").SetKeys(true, "Id")
-		users                 = e.DbMap.AddTableWithName(User{}, "users").SetKeys(true, "Id")
-		wordlist_items        = e.DbMap.AddTableWithName(WordlistItem{}, "wordlist_items").SetKeys(true, "Id")
-		wordlists             = e.DbMap.AddTableWithName(Wordlist{}, "wordlist").SetKeys(true, "Id")
-		words                 = e.DbMap.AddTableWithName(Word{}, "words").SetKeys(true, "Id")
+		collection_tags       = e.DbMap.AddTableWithName(CollectionTag{}, "collection_tags").SetKeys(true, "id")
+		collections           = e.DbMap.AddTableWithName(Collection{}, "collections").SetKeys(true, "id")
+		corpus_tags           = e.DbMap.AddTableWithName(CorpusTag{}, "corpus_tags").SetKeys(true, "id")
+		corpus_words          = e.DbMap.AddTableWithName(CorpusWord{}, "corpus_words").SetKeys(true, "id")
+		corpora               = e.DbMap.AddTableWithName(Corpus{}, "corpora").SetKeys(true, "id")
+		definition_link_types = e.DbMap.AddTableWithName(DefinitionLinkType{}, "definition_link_types").SetKeys(true, "id")
+		definition_links      = e.DbMap.AddTableWithName(DefinitionLink{}, "definition_links").SetKeys(true, "id")
+		definitions           = e.DbMap.AddTableWithName(Definition{}, "definitions").SetKeys(true, "id")
+		highlights            = e.DbMap.AddTableWithName(Highlight{}, "highlights").SetKeys(true, "id")
+		instances             = e.DbMap.AddTableWithName(Instance{}, "instances").SetKeys(true, "id")
+		languages             = e.DbMap.AddTableWithName(Language{}, "languages").SetKeys(true, "id")
+		lexica                = e.DbMap.AddTableWithName(Lexica{}, "lexica").SetKeys(true, "id")
+		note_collections      = e.DbMap.AddTableWithName(NoteCollection{}, "note_collections").SetKeys(true, "id")
+		note_definitions      = e.DbMap.AddTableWithName(NoteDefinition{}, "note_definitions").SetKeys(true, "id")
+		note_tags             = e.DbMap.AddTableWithName(NoteTag{}, "note_tags").SetKeys(true, "id")
+		notes                 = e.DbMap.AddTableWithName(Note{}, "notes").SetKeys(true, "id")
+		tags                  = e.DbMap.AddTableWithName(Tag{}, "tags").SetKeys(true, "id")
+		usages                = e.DbMap.AddTableWithName(Usage{}, "usages").SetKeys(true, "id")
+		users                 = e.DbMap.AddTableWithName(User{}, "users").SetKeys(true, "id")
+		wordlist_items        = e.DbMap.AddTableWithName(WordlistItem{}, "wordlist_items").SetKeys(true, "id")
+		wordlists             = e.DbMap.AddTableWithName(Wordlist{}, "wordlist").SetKeys(true, "id")
+		words                 = e.DbMap.AddTableWithName(Word{}, "words").SetKeys(true, "id")
 	)
+
+	words.AddIndex("words_unique_idx", "Btree", []string{"word"}).SetUnique(true)
 
 	if err := e.DbMap.CreateTablesIfNotExists(); err != nil {
 		return errors.New("failed to create tables: " + err.Error())
 	}
+
+	e.DbMap.CreateIndex()
+	// if err := e.DbMap.CreateIndex(); err != nil {
+	// 	return errors.New("failed to create indexes: " + err.Error())
+	// }
 
 	e.AddForeignKey(collection_tags, "collection_id", collections, "id", 1)
 	e.AddForeignKey(collection_tags, "instance_id", instances, "id", 1)
@@ -148,11 +160,6 @@ func (e *Engine) Run() error {
 		e.DbMap.Exec("PRAGMA foreign_keys = ON")
 
 	}
-
-	if e.Config.Database.LogMode {
-		e.DbMap.TraceOn("[gorp]", log.New(os.Stdout, "langsuite:", log.Lmicroseconds))
-	}
-	defer e.DbMap.Db.Close()
 
 	// Setup Router
 
@@ -221,7 +228,7 @@ func (e *Engine) Run() error {
 // this will produce an error when it already exists but that's ok for now
 func (e *Engine) AddForeignKey(table *gorp.TableMap, key string, reference *gorp.TableMap, column string, ordinal uint) error {
 	if _, err := e.DbMap.Exec(fmt.Sprintf(
-		"ALTER TABLE %s ADD CONSTRAINT %s FOREIGN KEY (%s) REFERENCES %s(%s);",
+		"alter table %s add constraint %s foreign key (%s) references %s(%s);",
 		e.DbMap.Dialect.QuoteField(table.TableName),
 		e.DbMap.Dialect.QuoteField(fmt.Sprintf("fk_%s_%s_%d", table.TableName, reference.TableName, ordinal)),
 		e.DbMap.Dialect.QuoteField(key),

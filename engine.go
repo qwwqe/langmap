@@ -27,10 +27,6 @@ func (e *Engine) AddService(s RoutableService) {
 	g.GET("/", s.Get)
 	g.GET("/:id", s.GetOne)
 	g.PATCH("/:id", s.Update)
-
-	for _, t := range s.Templates() {
-		e.Router.HTMLRender.(multitemplate.Render).AddFromFiles(t, "templates/base.tmpl", "templates/"+t+".tmpl")
-	}
 }
 
 func (e *Engine) Run() error {

@@ -93,28 +93,6 @@ func (e *Engine) Run(createTables, createIndexes, createForeignKeys bool) error 
 	}
 
 	if createForeignKeys {
-		e.AddForeignKey(collection_tags, "collection_id", collections, "id", 1)
-		e.AddForeignKey(collection_tags, "tag_id", tags, "id", 1)
-		e.AddForeignKey(corpus_tags, "corpus_id", corpora, "id", 1)
-		e.AddForeignKey(corpus_tags, "tag_id", tags, "id", 1)
-		e.AddForeignKey(corpus_words, "corpus_id", corpora, "id", 1)
-		e.AddForeignKey(definition_links, "definition1_id", definitions, "id", 1)
-		e.AddForeignKey(definition_links, "definition2_id", definitions, "id", 2)
-		e.AddForeignKey(definition_links, "type_id", definition_link_types, "id", 1)
-		e.AddForeignKey(highlights, "corpus_id", corpora, "id", 1)
-		e.AddForeignKey(instances, "language_id", languages, "id", 1)
-		e.AddForeignKey(instances, "user_id", users, "id", 1)
-		e.AddForeignKey(lexica, "language_id", languages, "id", 1)
-		e.AddForeignKey(note_collections, "collection_id", collections, "id", 1)
-		e.AddForeignKey(note_collections, "note_id", notes, "id", 1)
-		e.AddForeignKey(note_definitions, "definition_id", definitions, "id", 1)
-		e.AddForeignKey(note_definitions, "note_id", notes, "id", 1)
-		e.AddForeignKey(note_tags, "note_id", notes, "id", 1)
-		e.AddForeignKey(note_tags, "tag_id", tags, "id", 1)
-		e.AddForeignKey(usages, "corpus_id", corpora, "id", 1)
-		e.AddForeignKey(usages, "definition_id", definitions, "id", 1)
-		e.AddForeignKey(wordlist_items, "wordlist_id", wordlists, "id", 1)
-
 		for _, t := range []*gorp.TableMap{
 			wordlist_items,
 			corpus_words,
@@ -142,6 +120,28 @@ func (e *Engine) Run(createTables, createIndexes, createForeignKeys bool) error 
 		} {
 			e.AddForeignKey(t, "instance_id", instances, "id", 1)
 		}
+
+		e.AddForeignKey(collection_tags, "collection_id", collections, "id", 1)
+		e.AddForeignKey(collection_tags, "tag_id", tags, "id", 1)
+		e.AddForeignKey(corpus_tags, "corpus_id", corpora, "id", 1)
+		e.AddForeignKey(corpus_tags, "tag_id", tags, "id", 1)
+		e.AddForeignKey(corpus_words, "corpus_id", corpora, "id", 1)
+		e.AddForeignKey(definition_links, "definition1_id", definitions, "id", 1)
+		e.AddForeignKey(definition_links, "definition2_id", definitions, "id", 2)
+		e.AddForeignKey(definition_links, "type_id", definition_link_types, "id", 1)
+		e.AddForeignKey(highlights, "corpus_id", corpora, "id", 1)
+		e.AddForeignKey(instances, "language_id", languages, "id", 1)
+		e.AddForeignKey(instances, "user_id", users, "id", 1)
+		e.AddForeignKey(lexica, "language_id", languages, "id", 1)
+		e.AddForeignKey(note_collections, "collection_id", collections, "id", 1)
+		e.AddForeignKey(note_collections, "note_id", notes, "id", 1)
+		e.AddForeignKey(note_definitions, "definition_id", definitions, "id", 1)
+		e.AddForeignKey(note_definitions, "note_id", notes, "id", 1)
+		e.AddForeignKey(note_tags, "note_id", notes, "id", 1)
+		e.AddForeignKey(note_tags, "tag_id", tags, "id", 1)
+		e.AddForeignKey(usages, "corpus_id", corpora, "id", 1)
+		e.AddForeignKey(usages, "definition_id", definitions, "id", 1)
+		e.AddForeignKey(wordlist_items, "wordlist_id", wordlists, "id", 1)
 	}
 
 	switch e.Config.Database.Driver {

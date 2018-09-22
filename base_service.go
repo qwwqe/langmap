@@ -17,9 +17,9 @@ func (s *BaseService) Get(c *gin.Context)    {}
 func (s *BaseService) GetOne(c *gin.Context) {}
 func (s *BaseService) Update(c *gin.Context) {}
 
-func (s *BaseService) Db() *gorp.DbMap       { return s.Engine.DbMap }
-func (s *BaseService) Table() *gorp.TableMap { return s.TableMap }
-func (s *BaseService) TableName() string     { return s.TableMap.TableName }
+func (s BaseService) Db() *gorp.DbMap       { return s.Engine.DbMap }
+func (s BaseService) Table() *gorp.TableMap { return s.TableMap }
+func (s BaseService) TableName() string     { return s.TableMap.TableName }
 
 func (s *BaseService) SetEngine(e *Engine) { s.Engine = e }
 func (s *BaseService) Router() *gin.RouterGroup {

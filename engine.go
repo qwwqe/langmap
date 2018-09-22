@@ -19,8 +19,8 @@ type Engine struct {
 	Router *gin.Engine
 }
 
-func (e *Engine) AddService(s Service) {
-	g := e.Router.Group(s.GetPrefix())
+func (e *Engine) AddService(s RoutableService) {
+	g := s.Router(e.Router)
 
 	g.POST("/", s.Create)
 	g.DELETE("/:id", s.Delete)
@@ -176,45 +176,59 @@ func (e *Engine) Run() error {
 	e.Router.HTMLRender = multitemplate.New()
 
 	e.AddService(&DefinitionService{
-		Engine: e,
-		Prefix: "/api/definitions",
-		Table:  definitions,
+		BaseService: BaseService{
+			Engine:   e,
+			Prefix:   "/api/definitions",
+			TableMap: definitions,
+		},
 	})
 
 	e.AddService(&NoteService{
-		Engine: e,
-		Prefix: "/api/notes",
-		Table:  notes,
+		BaseService: BaseService{
+			Engine:   e,
+			Prefix:   "/api/notes",
+			TableMap: notes,
+		},
 	})
 
 	e.AddService(&UsageService{
-		Engine: e,
-		Prefix: "/api/usages",
-		Table:  usages,
+		BaseService: BaseService{
+			Engine:   e,
+			Prefix:   "/api/usages",
+			TableMap: usages,
+		},
 	})
 
 	e.AddService(&WordService{
-		Engine: e,
-		Prefix: "/api/words",
-		Table:  words,
+		BaseService: BaseService{
+			Engine:   e,
+			Prefix:   "/api/words",
+			TableMap: words,
+		},
 	})
 
 	e.AddService(&UserService{
-		Engine: e,
-		Prefix: "/api/users",
-		Table:  users,
+		BaseService: BaseService{
+			Engine:   e,
+			Prefix:   "/api/users",
+			TableMap: users,
+		},
 	})
 
 	e.AddService(&LanguageService{
-		Engine: e,
-		Prefix: "/api/languages",
-		Table:  languages,
+		BaseService: BaseService{
+			Engine:   e,
+			Prefix:   "/api/languages",
+			TableMap: languages,
+		},
 	})
 
 	e.AddService(&InstanceService{
-		Engine: e,
-		Prefix: "/api/instances",
-		Table:  instances,
+		BaseService: BaseService{
+			Engine:   e,
+			Prefix:   "/api/instances",
+			TableMap: instances,
+		},
 	})
 
 	// Run

@@ -1,7 +1,7 @@
 package langmap
 
 type Usage struct {
-	Id           uint `db:"id" json:"id"`
+	BaseTable
 	DefinitionId uint `db:"definition_id" json:"definition_id"`
 	CorpusId     uint `db:"corpus_id" json:"corpus_id"`
 	InstanceId   uint `db:"instance_id" json:"instance_id"`

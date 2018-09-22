@@ -1,7 +1,7 @@
 package langmap
 
 type User struct {
-	Id   uint   `db:"id" json:"id"`
+	BaseTable
 	Name string `db:"name" json:"name"`
 }
 

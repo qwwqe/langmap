@@ -1,7 +1,7 @@
 package langmap
 
 type Language struct {
-	Id  uint   `db:"id" json:"id"`
+	BaseTable
 	Tag string `db:"tag" json:"tag"`
 }
 

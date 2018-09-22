@@ -7,7 +7,7 @@ import (
 )
 
 type Definition struct {
-	Id            uint   `json:"id" db:"id"`
+	BaseTable
 	Pronunciation string `json:"pronunciation" db:"pronunciation"`
 	Meaning       string `json:"meaning" db:"meaning"`
 	WordId        uint   `json:"word_id" db:"word_id"`

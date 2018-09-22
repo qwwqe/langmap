@@ -1,7 +1,7 @@
 package langmap
 
 type Word struct {
-	Id   uint   `db:"id" json:"id"`
+	BaseTable
 	Word string `db:"word" json:"word"`
 }
 

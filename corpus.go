@@ -1,7 +1,7 @@
 package langmap
 
 type Corpus struct {
-	Id         uint   `db:"id"`
+	BaseTable
 	Name       string `db:"name"`
 	MD5        string `db:"md_5"`
 	Browsable  string `db:"browsable"`

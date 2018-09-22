@@ -1,7 +1,7 @@
 package langmap
 
 type Wordlist struct {
-	Id         uint   `db:"id"`
+	BaseTable
 	Name       string `db:"name"`
 	InstanceId uint   `db:"instance_id"`
 }

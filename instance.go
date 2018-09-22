@@ -1,7 +1,7 @@
 package langmap
 
 type Instance struct {
-	Id         uint   `db:"id" json:"id"`
+	BaseTable
 	Name       string `db:"name" json:"name"`
 	UserId     uint   `db:"user_id" json:"user_id"`
 	LanguageId uint   `db:"language_id" json:"language_id"`

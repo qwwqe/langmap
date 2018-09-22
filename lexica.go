@@ -1,7 +1,7 @@
 package langmap
 
 type Lexica struct {
-	Id         uint   `db:"id"`
+	BaseTable
 	URI        string `db:"uri"`
 	Name       string `db:"name"`
 	LanguageId uint   `db:"language_id"`

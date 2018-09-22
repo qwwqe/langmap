@@ -1,7 +1,7 @@
 package langmap
 
 type CorpusWord struct {
-	Id       uint `db:"id"`
+	BaseTable
 	Position uint `db:"position"`
 	Sentence uint `db:"sentence"`
 	Semantic bool `db:"semantic"`

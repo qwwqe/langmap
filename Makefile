@@ -9,7 +9,7 @@ langmap:
 
 .PHONY: run
 run:
-	go run -ldflags "$(LDFLAGS)" $(INPUT) -f $(CONFIG)
+	go run -ldflags "$(LDFLAGS)" $(INPUT) -config $(CONFIG)
 
 .PHONY: clean
 clean:

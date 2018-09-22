@@ -166,11 +166,9 @@ func (e *Engine) Run() error {
 	e.Router = gin.Default()
 
 	v := VersionMiddleware{Engine: e}
-	a := AuthMiddleware{Engine: e}
 
 	e.Router.Use(
 		v.Handler,
-		a.Handler,
 	)
 
 	e.Router.HTMLRender = multitemplate.New()

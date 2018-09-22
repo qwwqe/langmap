@@ -7,3 +7,5 @@ type DefinitionLink struct {
 	Definition2Id uint `json:"definition2_id" db:"definition2_id"`
 	InstanceId    uint `json:"instance_id" db:"instance_id"`
 }
+
+func (_ DefinitionLink) TableName() string { return "definition_links" }

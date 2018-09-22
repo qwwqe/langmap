@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ServiceCreate(w TableWriter, prefix string, r IdentifiableResource, c *gin.Context) {
+func ServiceCreate(w TableWriter, prefix string, r Identifiable, c *gin.Context) {
 	if err := c.ShouldBindJSON(r); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"reason": ErrJsonFailed,

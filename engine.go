@@ -54,28 +54,28 @@ func (e *Engine) Run(createTables, createIndexes, createForeignKeys bool) error 
 	defer e.DbMap.Db.Close()
 
 	var (
-		collection_tags       = e.DbMap.AddTableWithName(CollectionTag{}, "collection_tags").SetKeys(true, "id")
-		collections           = e.DbMap.AddTableWithName(Collection{}, "collections").SetKeys(true, "id")
-		corpus_tags           = e.DbMap.AddTableWithName(CorpusTag{}, "corpus_tags").SetKeys(true, "id")
-		corpus_words          = e.DbMap.AddTableWithName(CorpusWord{}, "corpus_words").SetKeys(true, "id")
-		corpora               = e.DbMap.AddTableWithName(Corpus{}, "corpora").SetKeys(true, "id")
-		definition_link_types = e.DbMap.AddTableWithName(DefinitionLinkType{}, "definition_link_types").SetKeys(true, "id")
-		definition_links      = e.DbMap.AddTableWithName(DefinitionLink{}, "definition_links").SetKeys(true, "id")
-		definitions           = e.DbMap.AddTableWithName(Definition{}, "definitions").SetKeys(true, "id")
-		highlights            = e.DbMap.AddTableWithName(Highlight{}, "highlights").SetKeys(true, "id")
-		instances             = e.DbMap.AddTableWithName(Instance{}, "instances").SetKeys(true, "id")
-		languages             = e.DbMap.AddTableWithName(Language{}, "languages").SetKeys(true, "id")
-		lexica                = e.DbMap.AddTableWithName(Lexica{}, "lexica").SetKeys(true, "id")
-		note_collections      = e.DbMap.AddTableWithName(NoteCollection{}, "note_collections").SetKeys(true, "id")
-		note_definitions      = e.DbMap.AddTableWithName(NoteDefinition{}, "note_definitions").SetKeys(true, "id")
-		note_tags             = e.DbMap.AddTableWithName(NoteTag{}, "note_tags").SetKeys(true, "id")
-		notes                 = e.DbMap.AddTableWithName(Note{}, "notes").SetKeys(true, "id")
-		tags                  = e.DbMap.AddTableWithName(Tag{}, "tags").SetKeys(true, "id")
-		usages                = e.DbMap.AddTableWithName(Usage{}, "usages").SetKeys(true, "id")
-		users                 = e.DbMap.AddTableWithName(User{}, "users").SetKeys(true, "id")
-		wordlist_items        = e.DbMap.AddTableWithName(WordlistItem{}, "wordlist_items").SetKeys(true, "id")
-		wordlists             = e.DbMap.AddTableWithName(Wordlist{}, "wordlist").SetKeys(true, "id")
-		words                 = e.DbMap.AddTableWithName(Word{}, "words").SetKeys(true, "id")
+		collection_tags       = e.AddTable(CollectionTag{})
+		collections           = e.AddTable(Collection{})
+		corpus_tags           = e.AddTable(CorpusTag{})
+		corpus_words          = e.AddTable(CorpusWord{})
+		corpora               = e.AddTable(Corpus{})
+		definition_link_types = e.AddTable(DefinitionLinkType{})
+		definition_links      = e.AddTable(DefinitionLink{})
+		definitions           = e.AddTable(Definition{})
+		highlights            = e.AddTable(Highlight{})
+		instances             = e.AddTable(Instance{})
+		languages             = e.AddTable(Language{})
+		lexica                = e.AddTable(Lexica{})
+		note_collections      = e.AddTable(NoteCollection{})
+		note_definitions      = e.AddTable(NoteDefinition{})
+		note_tags             = e.AddTable(NoteTag{})
+		notes                 = e.AddTable(Note{})
+		tags                  = e.AddTable(Tag{})
+		usages                = e.AddTable(Usage{})
+		users                 = e.AddTable(User{})
+		wordlist_items        = e.AddTable(WordlistItem{})
+		wordlists             = e.AddTable(Wordlist{})
+		words                 = e.AddTable(Word{})
 	)
 
 	words.AddIndex("words_unique_idx", "Btree", []string{"word"}).SetUnique(true)
@@ -231,4 +231,8 @@ func (e *Engine) AddForeignKey(table *gorp.TableMap, key string, reference *gorp
 	}
 
 	return nil
+}
+
+func (e *Engine) AddTable(i IdentifiableTable) *gorp.TableMap {
+	return e.DbMap.AddTableWithName(i, i.TableName()).SetKeys(true, "id")
 }

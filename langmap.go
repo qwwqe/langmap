@@ -13,13 +13,18 @@ type MapInjectable interface {
 	FromMap(map[string]interface{})
 }
 
-type IdentifiableResource interface {
+type Identifiable interface {
 	GetId() uint
 }
 
 type TableWriter interface {
 	Db() *gorp.DbMap
 	Table() *gorp.TableMap
+	TableName() string
+}
+
+type IdentifiableTable interface {
+	Identifiable
 	TableName() string
 }
 

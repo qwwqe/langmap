@@ -6,3 +6,5 @@ type Highlight struct {
 	CorpusWordId uint `json:"corpus_word_id" db:"corpus_word_id"`
 	InstanceId   uint `json:"instance_id" db:"instance_id"`
 }
+
+func (_ Highlight) TableName() string { return "highlights" }

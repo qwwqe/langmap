@@ -5,6 +5,8 @@ type User struct {
 	Name string `json:"name" db:"name"`
 }
 
+func (_ User) TableName() string { return "users" }
+
 func (u *User) FromMap(m map[string]interface{}) {
 	for k, v := range m {
 		switch k {

@@ -6,3 +6,5 @@ type NoteDefinition struct {
 	DefinitionId uint `json:"definition_id" db:"definition_id"`
 	InstanceId   uint `json:"instance_id" db:"instance_id"`
 }
+
+func (_ NoteDefinition) TableName() string { return "note_definitions" }

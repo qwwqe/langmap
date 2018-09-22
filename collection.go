@@ -5,3 +5,5 @@ type Collection struct {
 	Name       string `json:"name" db:"name"`
 	InstanceId uint   `json:"instance_id" db:"instance_id"`
 }
+
+func (_ Collection) TableName() string { return "collections" }

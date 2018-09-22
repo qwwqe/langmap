@@ -6,3 +6,5 @@ type NoteTag struct {
 	TagId      uint `json:"tag_id" db:"tag_id"`
 	InstanceId uint `json:"instance_id" db:"instance_id"`
 }
+
+func (_ NoteTag) TableName() string { return "note_tags" }

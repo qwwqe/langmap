@@ -7,3 +7,5 @@ type Corpus struct {
 	Browsable  string `json:"browsable" db:"browsable"`
 	InstanceId uint   `json:"instance_id" db:"instance_id"`
 }
+
+func (_ Corpus) TableName() string { return "corpora" }

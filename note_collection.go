@@ -6,3 +6,5 @@ type NoteCollection struct {
 	NoteId       uint `json:"note_id" db:"note_id"`
 	InstanceId   uint `json:"instance_id" db:"instance_id"`
 }
+
+func (_ NoteCollection) TableName() string { return "note_collections" }

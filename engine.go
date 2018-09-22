@@ -29,7 +29,7 @@ func (e *Engine) AddService(s RoutableService) {
 	g.PATCH("/:id", s.Update)
 }
 
-func (e *Engine) Run() error {
+func (e *Engine) Run(createTables, createIndexes, createForeignKeys bool) error {
 
 	// Setup DB
 
@@ -85,71 +85,69 @@ func (e *Engine) Run() error {
 
 	words.AddIndex("words_unique_idx", "Btree", []string{"word"}).SetUnique(true)
 
-	if err := e.DbMap.CreateTablesIfNotExists(); err != nil {
-		return errors.New("failed to create tables: " + err.Error())
+	if createTables {
+		if err := e.DbMap.CreateTablesIfNotExists(); err != nil {
+			return errors.New("failed to create tables: " + err.Error())
+		}
 	}
 
-	e.DbMap.CreateIndex()
-	// if err := e.DbMap.CreateIndex(); err != nil {
-	// 	return errors.New("failed to create indexes: " + err.Error())
-	// }
+	if createIndexes {
+		if err := e.DbMap.CreateIndex(); err != nil {
+			log.Println("failed to create indexes: " + err.Error())
+		}
+	}
 
-	e.AddForeignKey(collection_tags, "collection_id", collections, "id", 1)
-	e.AddForeignKey(collection_tags, "instance_id", instances, "id", 1)
-	e.AddForeignKey(collection_tags, "tag_id", tags, "id", 1)
+	if createForeignKeys {
+		e.AddForeignKey(collection_tags, "collection_id", collections, "id", 1)
+		e.AddForeignKey(collection_tags, "tag_id", tags, "id", 1)
+		e.AddForeignKey(corpus_tags, "corpus_id", corpora, "id", 1)
+		e.AddForeignKey(corpus_tags, "tag_id", tags, "id", 1)
+		e.AddForeignKey(corpus_words, "corpus_id", corpora, "id", 1)
+		e.AddForeignKey(definition_links, "definition1_id", definitions, "id", 1)
+		e.AddForeignKey(definition_links, "definition2_id", definitions, "id", 2)
+		e.AddForeignKey(definition_links, "type_id", definition_link_types, "id", 1)
+		e.AddForeignKey(highlights, "corpus_id", corpora, "id", 1)
+		e.AddForeignKey(instances, "language_id", languages, "id", 1)
+		e.AddForeignKey(instances, "user_id", users, "id", 1)
+		e.AddForeignKey(lexica, "language_id", languages, "id", 1)
+		e.AddForeignKey(note_collections, "collection_id", collections, "id", 1)
+		e.AddForeignKey(note_collections, "note_id", notes, "id", 1)
+		e.AddForeignKey(note_definitions, "definition_id", definitions, "id", 1)
+		e.AddForeignKey(note_definitions, "note_id", notes, "id", 1)
+		e.AddForeignKey(note_tags, "note_id", notes, "id", 1)
+		e.AddForeignKey(note_tags, "tag_id", tags, "id", 1)
+		e.AddForeignKey(usages, "corpus_id", corpora, "id", 1)
+		e.AddForeignKey(usages, "definition_id", definitions, "id", 1)
+		e.AddForeignKey(wordlist_items, "wordlist_id", wordlists, "id", 1)
 
-	e.AddForeignKey(collections, "instance_id", instances, "id", 1)
+		for _, t := range []*gorp.TableMap{
+			wordlist_items,
+			corpus_words,
+			definitions,
+			highlights,
+		} {
+			e.AddForeignKey(t, "word_id", words, "id", 1)
+		}
 
-	e.AddForeignKey(corpora, "instance_id", instances, "id", 1)
-
-	e.AddForeignKey(corpus_tags, "corpus_id", corpora, "id", 1)
-	e.AddForeignKey(corpus_tags, "instance_id", instances, "id", 1)
-	e.AddForeignKey(corpus_tags, "tag_id", tags, "id", 1)
-
-	e.AddForeignKey(corpus_words, "corpus_id", corpora, "id", 1)
-	e.AddForeignKey(corpus_words, "word_id", words, "id", 1)
-
-	e.AddForeignKey(definition_links, "definition1_id", definitions, "id", 1)
-	e.AddForeignKey(definition_links, "definition2_id", definitions, "id", 2)
-	e.AddForeignKey(definition_links, "instance_id", instances, "id", 1)
-	e.AddForeignKey(definition_links, "type_id", definition_link_types, "id", 1)
-
-	e.AddForeignKey(definitions, "instance_id", instances, "id", 1)
-	e.AddForeignKey(definitions, "word_id", words, "id", 1)
-
-	e.AddForeignKey(highlights, "corpus_id", corpora, "id", 1)
-	e.AddForeignKey(highlights, "corpus_word_id", corpus_words, "id", 1)
-	e.AddForeignKey(highlights, "instance_id", instances, "id", 1)
-
-	e.AddForeignKey(instances, "language_id", languages, "id", 1)
-	e.AddForeignKey(instances, "user_id", users, "id", 1)
-
-	e.AddForeignKey(lexica, "language_id", languages, "id", 1)
-
-	e.AddForeignKey(note_collections, "collection_id", collections, "id", 1)
-	e.AddForeignKey(note_collections, "instance_id", instances, "id", 1)
-	e.AddForeignKey(note_collections, "note_id", notes, "id", 1)
-
-	e.AddForeignKey(note_definitions, "definition_id", definitions, "id", 1)
-	e.AddForeignKey(note_definitions, "instance_id", instances, "id", 1)
-	e.AddForeignKey(note_definitions, "note_id", notes, "id", 1)
-
-	e.AddForeignKey(note_tags, "instance_id", instances, "id", 1)
-	e.AddForeignKey(note_tags, "note_id", notes, "id", 1)
-	e.AddForeignKey(note_tags, "tag_id", tags, "id", 1)
-
-	e.AddForeignKey(notes, "instance_id", instances, "id", 1)
-
-	e.AddForeignKey(tags, "instance_id", instances, "id", 1)
-
-	e.AddForeignKey(usages, "corpus_id", corpora, "id", 1)
-	e.AddForeignKey(usages, "definition_id", definitions, "id", 1)
-	e.AddForeignKey(usages, "instance_id", instances, "id", 1)
-
-	e.AddForeignKey(wordlist_items, "word_id", words, "id", 1)
-	e.AddForeignKey(wordlist_items, "wordlist_id", wordlists, "id", 1)
-
-	e.AddForeignKey(wordlists, "instance_id", instances, "id", 1)
+		for _, t := range []*gorp.TableMap{
+			collection_tags,
+			collections,
+			corpora,
+			corpus_tags,
+			definition_links,
+			definitions,
+			highlights,
+			note_collections,
+			note_definitions,
+			note_tags,
+			notes,
+			tags,
+			usages,
+			wordlists,
+		} {
+			e.AddForeignKey(t, "instance_id", instances, "id", 1)
+		}
+	}
 
 	switch e.Config.Database.Driver {
 	case "sqlite3":

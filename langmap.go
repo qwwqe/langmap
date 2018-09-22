@@ -30,5 +30,6 @@ type RoutableService interface {
 	GetOne(*gin.Context)
 	Update(*gin.Context)
 
-	Router(*gin.Engine) *gin.RouterGroup
+	SetEngine(*Engine)
+	Router() *gin.RouterGroup
 }

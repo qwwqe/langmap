@@ -19,14 +19,9 @@ type Engine struct {
 	Router *gin.Engine
 }
 
-func (e *Engine) AddService(s RoutableService) {
-	g := s.Router(e.Router)
-
-	g.POST("/", s.Create)
-	g.DELETE("/:id", s.Delete)
-	g.GET("/", s.Get)
-	g.GET("/:id", s.GetOne)
-	g.PATCH("/:id", s.Update)
+func (e *Engine) AddService(s RoutableService) *gin.RouterGroup {
+	s.SetEngine(e)
+	return s.Router()
 }
 
 func (e *Engine) Run(createTables, createIndexes, createForeignKeys bool) error {
@@ -167,61 +162,52 @@ func (e *Engine) Run(createTables, createIndexes, createForeignKeys bool) error 
 
 	e.Router.HTMLRender = multitemplate.New()
 
-	e.AddService(&DefinitionService{
-		BaseService: BaseService{
-			Engine:   e,
-			Prefix:   "/api/definitions",
-			TableMap: definitions,
+	for _, s := range []RoutableService{
+		&DefinitionService{
+			BaseService: BaseService{
+				Prefix:   "/api/definitions",
+				TableMap: definitions,
+			},
 		},
-	})
-
-	e.AddService(&NoteService{
-		BaseService: BaseService{
-			Engine:   e,
-			Prefix:   "/api/notes",
-			TableMap: notes,
+		&NoteService{
+			BaseService: BaseService{
+				Prefix:   "/api/notes",
+				TableMap: notes,
+			},
 		},
-	})
-
-	e.AddService(&UsageService{
-		BaseService: BaseService{
-			Engine:   e,
-			Prefix:   "/api/usages",
-			TableMap: usages,
+		&UsageService{
+			BaseService: BaseService{
+				Prefix:   "/api/usages",
+				TableMap: usages,
+			},
 		},
-	})
-
-	e.AddService(&WordService{
-		BaseService: BaseService{
-			Engine:   e,
-			Prefix:   "/api/words",
-			TableMap: words,
+		&WordService{
+			BaseService: BaseService{
+				Prefix:   "/api/words",
+				TableMap: words,
+			},
 		},
-	})
-
-	e.AddService(&UserService{
-		BaseService: BaseService{
-			Engine:   e,
-			Prefix:   "/api/users",
-			TableMap: users,
+		&UserService{
+			BaseService: BaseService{
+				Prefix:   "/api/users",
+				TableMap: users,
+			},
 		},
-	})
-
-	e.AddService(&LanguageService{
-		BaseService: BaseService{
-			Engine:   e,
-			Prefix:   "/api/languages",
-			TableMap: languages,
+		&LanguageService{
+			BaseService: BaseService{
+				Prefix:   "/api/languages",
+				TableMap: languages,
+			},
 		},
-	})
-
-	e.AddService(&InstanceService{
-		BaseService: BaseService{
-			Engine:   e,
-			Prefix:   "/api/instances",
-			TableMap: instances,
+		&InstanceService{
+			BaseService: BaseService{
+				Prefix:   "/api/instances",
+				TableMap: instances,
+			},
 		},
-	})
+	} {
+		e.AddService(s)
+	}
 
 	// Run
 

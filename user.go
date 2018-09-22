@@ -2,7 +2,7 @@ package langmap
 
 type User struct {
 	BaseTable
-	Name string `db:"name" json:"name"`
+	Name string `json:"name" db:"name"`
 }
 
 func (u *User) FromMap(m map[string]interface{}) {

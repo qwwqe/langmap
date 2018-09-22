@@ -2,7 +2,7 @@ package langmap
 
 type Language struct {
 	BaseTable
-	Tag string `db:"tag" json:"tag"`
+	Tag string `json:"tag" db:"tag"`
 }
 
 func (l *Language) FromMap(m map[string]interface{}) {

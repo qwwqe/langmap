@@ -2,7 +2,7 @@ package langmap
 
 type Word struct {
 	BaseTable
-	Word string `db:"word" json:"word"`
+	Word string `json:"word" db:"word"`
 }
 
 func (w *Word) FromMap(m map[string]interface{}) {

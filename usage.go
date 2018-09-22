@@ -2,9 +2,9 @@ package langmap
 
 type Usage struct {
 	BaseTable
-	DefinitionId uint `db:"definition_id" json:"definition_id"`
-	CorpusId     uint `db:"corpus_id" json:"corpus_id"`
-	InstanceId   uint `db:"instance_id" json:"instance_id"`
+	DefinitionId uint `json:"definition_id" db:"definition_id"`
+	CorpusId     uint `json:"corpus_id" db:"corpus_id"`
+	InstanceId   uint `json:"instance_id" db:"instance_id"`
 }
 
 func (u *Usage) FromMap(m map[string]interface{}) {

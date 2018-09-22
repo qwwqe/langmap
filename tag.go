@@ -2,6 +2,6 @@ package langmap
 
 type Tag struct {
 	BaseTable
-	Name       string `db:"name"`
-	InstanceId uint   `db:"instance_id"`
+	Name       string `json:"name" db:"name"`
+	InstanceId uint   `json:"instance_id" db:"instance_id"`
 }

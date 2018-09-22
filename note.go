@@ -2,9 +2,9 @@ package langmap
 
 type Note struct {
 	BaseTable
-	Title      string `db:"title" json:"title"`
-	Comment    string `db:"comment" json:"comment"`
-	InstanceId uint   `db:"instance_id" json:"instance_id"`
+	Title      string `json:"title" db:"title"`
+	Comment    string `json:"comment" db:"comment"`
+	InstanceId uint   `json:"instance_id" db:"instance_id"`
 }
 
 func (n *Note) FromMap(m map[string]interface{}) {

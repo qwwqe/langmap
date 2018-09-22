@@ -2,6 +2,6 @@ package langmap
 
 type WordlistItem struct {
 	BaseTable
-	WordlistId uint `db:"wordlist_id"`
-	WordId     uint `db:"word_id"`
+	WordlistId uint `json:"wordlist_id" db:"wordlist_id"`
+	WordId     uint `json:"word_id" db:"word_id"`
 }

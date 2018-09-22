@@ -2,7 +2,7 @@ package langmap
 
 type NoteTag struct {
 	BaseTable
-	NoteId     uint `db:"note_id"`
-	TagId      uint `db:"tag_id"`
-	InstanceId uint `db:"instance_id"`
+	NoteId     uint `json:"note_id" db:"note_id"`
+	TagId      uint `json:"tag_id" db:"tag_id"`
+	InstanceId uint `json:"instance_id" db:"instance_id"`
 }

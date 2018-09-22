@@ -2,7 +2,7 @@ package langmap
 
 type CollectionTag struct {
 	BaseTable
-	CollectionId uint `db:"collection_id"`
-	TagId        uint `db:"tag_id"`
-	InstanceId   uint `db:"instance_id"`
+	CollectionId uint `json:"collection_id" db:"collection_id"`
+	TagId        uint `json:"tag_id" db:"tag_id"`
+	InstanceId   uint `json:"instance_id" db:"instance_id"`
 }

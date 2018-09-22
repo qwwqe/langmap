@@ -2,9 +2,9 @@ package langmap
 
 type Instance struct {
 	BaseTable
-	Name       string `db:"name" json:"name"`
-	UserId     uint   `db:"user_id" json:"user_id"`
-	LanguageId uint   `db:"language_id" json:"language_id"`
+	Name       string `json:"name" db:"name"`
+	UserId     uint   `json:"user_id" db:"user_id"`
+	LanguageId uint   `json:"language_id" db:"language_id"`
 }
 
 func (i *Instance) FromMap(m map[string]interface{}) {

@@ -2,5 +2,5 @@ package langmap
 
 type DefinitionLinkType struct {
 	BaseTable
-	Name string `db:"name"`
+	Name string `json:"name" db:"name"`
 }

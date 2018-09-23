@@ -17,7 +17,7 @@ func (s *LanguageService) Delete(c *gin.Context) {
 }
 
 func (s *LanguageService) Get(c *gin.Context) {
-	ServiceGet(s, &[]Language{}, c)
+	ServiceGet(s, Language{}, &[]Language{}, c)
 }
 
 func (s *LanguageService) GetOne(c *gin.Context) {

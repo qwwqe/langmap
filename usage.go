@@ -7,7 +7,7 @@ type Usage struct {
 	InstanceId   uint `json:"instance_id" db:"instance_id"`
 }
 
-func (_ Usage) TableName() string { return "usages" }
+func (Usage) TableName() string { return "usages" }
 
 func (u *Usage) FromMap(m map[string]interface{}) {
 	for k, v := range m {

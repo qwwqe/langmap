@@ -5,7 +5,7 @@ type Language struct {
 	Tag string `json:"tag" db:"tag"`
 }
 
-func (_ Language) TableName() string { return "languages" }
+func (Language) TableName() string { return "languages" }
 
 func (l *Language) FromMap(m map[string]interface{}) {
 	for k, v := range m {

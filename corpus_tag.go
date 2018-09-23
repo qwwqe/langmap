@@ -7,4 +7,4 @@ type CorpusTag struct {
 	InstanceId uint `json:"instance_id" db:"instance_id"`
 }
 
-func (_ CorpusTag) TableName() string { return "corpus_tags" }
+func (CorpusTag) TableName() string { return "corpus_tags" }

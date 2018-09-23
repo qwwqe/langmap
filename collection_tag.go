@@ -7,4 +7,4 @@ type CollectionTag struct {
 	InstanceId   uint `json:"instance_id" db:"instance_id"`
 }
 
-func (_ CollectionTag) TableName() string { return "collection_tags" }
+func (CollectionTag) TableName() string { return "collection_tags" }

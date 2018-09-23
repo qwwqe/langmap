@@ -5,4 +5,4 @@ type DefinitionLinkType struct {
 	Name string `json:"name" db:"name"`
 }
 
-func (_ DefinitionLinkType) TableName() string { return "definition_link_types" }
+func (DefinitionLinkType) TableName() string { return "definition_link_types" }

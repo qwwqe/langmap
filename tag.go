@@ -6,4 +6,4 @@ type Tag struct {
 	InstanceId uint   `json:"instance_id" db:"instance_id"`
 }
 
-func (_ Tag) TableName() string { return "tags" }
+func (Tag) TableName() string { return "tags" }

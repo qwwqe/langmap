@@ -7,4 +7,4 @@ type Lexica struct {
 	LanguageId uint   `json:"language_id" db:"language_id"`
 }
 
-func (_ Lexica) TableName() string { return "lexica" }
+func (Lexica) TableName() string { return "lexica" }

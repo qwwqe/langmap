@@ -17,7 +17,7 @@ func (s *UsageService) Delete(c *gin.Context) {
 }
 
 func (s *UsageService) Get(c *gin.Context) {
-	ServiceGet(s, &[]Usage{}, c)
+	ServiceGet(s, Usage{}, &[]Usage{}, c)
 }
 
 func (s *UsageService) GetOne(c *gin.Context) {

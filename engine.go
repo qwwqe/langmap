@@ -19,9 +19,16 @@ type Engine struct {
 	Router *gin.Engine
 }
 
-func (e *Engine) AddService(s RoutableService) *gin.RouterGroup {
+func (e *Engine) AddService(s RoutableService) {
 	s.SetEngine(e)
-	return s.Router()
+
+	g := s.Router()
+
+	g.POST("/", s.Create)
+	g.DELETE("/:id", s.Delete)
+	g.GET("/", s.Get)
+	g.GET("/:id", s.GetOne)
+	g.PATCH("/:id", s.Update)
 }
 
 func (e *Engine) Run(createTables, createIndexes, createForeignKeys bool) error {
@@ -163,48 +170,13 @@ func (e *Engine) Run(createTables, createIndexes, createForeignKeys bool) error 
 	e.Router.HTMLRender = multitemplate.New()
 
 	for _, s := range []RoutableService{
-		&DefinitionService{
-			BaseService: BaseService{
-				Prefix:   "/api/definitions",
-				TableMap: definitions,
-			},
-		},
-		&NoteService{
-			BaseService: BaseService{
-				Prefix:   "/api/notes",
-				TableMap: notes,
-			},
-		},
-		&UsageService{
-			BaseService: BaseService{
-				Prefix:   "/api/usages",
-				TableMap: usages,
-			},
-		},
-		&WordService{
-			BaseService: BaseService{
-				Prefix:   "/api/words",
-				TableMap: words,
-			},
-		},
-		&UserService{
-			BaseService: BaseService{
-				Prefix:   "/api/users",
-				TableMap: users,
-			},
-		},
-		&LanguageService{
-			BaseService: BaseService{
-				Prefix:   "/api/languages",
-				TableMap: languages,
-			},
-		},
-		&InstanceService{
-			BaseService: BaseService{
-				Prefix:   "/api/instances",
-				TableMap: instances,
-			},
-		},
+		&DefinitionService{BaseService: BaseService{Prefix: "/api/definitions"}},
+		&NoteService{BaseService: BaseService{Prefix: "/api/notes"}},
+		&UsageService{BaseService: BaseService{Prefix: "/api/usages"}},
+		&WordService{BaseService: BaseService{Prefix: "/api/words"}},
+		&UserService{BaseService: BaseService{Prefix: "/api/users"}},
+		&LanguageService{BaseService: BaseService{Prefix: "/api/languages"}},
+		&InstanceService{BaseService: BaseService{Prefix: "/api/instances"}},
 	} {
 		e.AddService(s)
 	}

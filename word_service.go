@@ -17,7 +17,7 @@ func (s *WordService) Delete(c *gin.Context) {
 }
 
 func (s *WordService) Get(c *gin.Context) {
-	ServiceGet(s, &[]Word{}, c)
+	ServiceGet(s, Word{}, &[]Word{}, c)
 }
 
 func (s *WordService) GetOne(c *gin.Context) {

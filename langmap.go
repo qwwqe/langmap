@@ -17,10 +17,8 @@ type Identifiable interface {
 	GetId() uint
 }
 
-type TableWriter interface {
+type DatabaseWriter interface {
 	Db() *gorp.DbMap
-	Table() *gorp.TableMap
-	TableName() string
 }
 
 type IdentifiableTable interface {

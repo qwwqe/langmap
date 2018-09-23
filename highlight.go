@@ -7,4 +7,4 @@ type Highlight struct {
 	InstanceId   uint `json:"instance_id" db:"instance_id"`
 }
 
-func (_ Highlight) TableName() string { return "highlights" }
+func (Highlight) TableName() string { return "highlights" }

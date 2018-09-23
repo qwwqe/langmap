@@ -8,4 +8,4 @@ type Corpus struct {
 	InstanceId uint   `json:"instance_id" db:"instance_id"`
 }
 
-func (_ Corpus) TableName() string { return "corpora" }
+func (Corpus) TableName() string { return "corpora" }

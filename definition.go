@@ -16,7 +16,7 @@ type Definition struct {
 	Word string `json:"word" db:"-"`
 }
 
-func (_ Definition) TableName() string { return "definitions" }
+func (Definition) TableName() string { return "definitions" }
 
 func (d *Definition) PreInsert(s gorp.SqlExecutor) error {
 	w := Word{}

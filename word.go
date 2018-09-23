@@ -5,7 +5,7 @@ type Word struct {
 	Word string `json:"word" db:"word"`
 }
 
-func (_ Word) TableName() string { return "words" }
+func (Word) TableName() string { return "words" }
 
 func (w *Word) FromMap(m map[string]interface{}) {
 	for k, v := range m {

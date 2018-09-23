@@ -17,7 +17,7 @@ func (s *DefinitionService) Delete(c *gin.Context) {
 }
 
 func (s *DefinitionService) Get(c *gin.Context) {
-	ServiceGet(s, &[]Definition{}, c)
+	ServiceGet(s, Definition{}, &[]Definition{}, c)
 }
 
 func (s *DefinitionService) GetOne(c *gin.Context) {

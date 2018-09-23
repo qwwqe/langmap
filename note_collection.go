@@ -7,4 +7,4 @@ type NoteCollection struct {
 	InstanceId   uint `json:"instance_id" db:"instance_id"`
 }
 
-func (_ NoteCollection) TableName() string { return "note_collections" }
+func (NoteCollection) TableName() string { return "note_collections" }

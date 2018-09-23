@@ -6,4 +6,4 @@ type Collection struct {
 	InstanceId uint   `json:"instance_id" db:"instance_id"`
 }
 
-func (_ Collection) TableName() string { return "collections" }
+func (Collection) TableName() string { return "collections" }

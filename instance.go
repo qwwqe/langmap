@@ -7,7 +7,7 @@ type Instance struct {
 	LanguageId uint   `json:"language_id" db:"language_id"`
 }
 
-func (_ Instance) TableName() string { return "instances" }
+func (Instance) TableName() string { return "instances" }
 
 func (i *Instance) FromMap(m map[string]interface{}) {
 	for k, v := range m {

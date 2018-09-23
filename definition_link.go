@@ -8,4 +8,4 @@ type DefinitionLink struct {
 	InstanceId    uint `json:"instance_id" db:"instance_id"`
 }
 
-func (_ DefinitionLink) TableName() string { return "definition_links" }
+func (DefinitionLink) TableName() string { return "definition_links" }

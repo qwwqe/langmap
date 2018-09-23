@@ -17,7 +17,7 @@ func (s *NoteService) Delete(c *gin.Context) {
 }
 
 func (s *NoteService) Get(c *gin.Context) {
-	ServiceGet(s, &[]Note{}, c)
+	ServiceGet(s, Note{}, &[]Note{}, c)
 }
 
 func (s *NoteService) GetOne(c *gin.Context) {

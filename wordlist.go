@@ -6,4 +6,4 @@ type Wordlist struct {
 	InstanceId uint   `json:"instance_id" db:"instance_id"`
 }
 
-func (_ Wordlist) TableName() string { return "wordlists" }
+func (Wordlist) TableName() string { return "wordlists" }

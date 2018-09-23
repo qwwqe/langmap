@@ -35,4 +35,5 @@ type RoutableService interface {
 
 	SetEngine(*Engine)
 	Router() *gin.RouterGroup
+	Register()
 }

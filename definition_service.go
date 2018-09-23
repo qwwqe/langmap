@@ -27,3 +27,7 @@ func (s *DefinitionService) GetOne(c *gin.Context) {
 func (s *DefinitionService) Update(c *gin.Context) {
 	ServiceUpdate(s, &Definition{}, c)
 }
+
+func (s *DefinitionService) Register() {
+	ServiceRegister(s)
+}

@@ -22,3 +22,7 @@ func (s *BaseService) Update(c *gin.Context) { c.Status(http.StatusNotImplemente
 
 func (s *BaseService) SetEngine(e *Engine)      { s.Engine = e }
 func (s *BaseService) Router() *gin.RouterGroup { return s.Engine.Router.Group(s.Prefix) }
+
+func (s *BaseService) Register() {
+	ServiceRegister(s)
+}

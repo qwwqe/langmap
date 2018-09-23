@@ -27,3 +27,7 @@ func (s *NoteService) GetOne(c *gin.Context) {
 func (s *NoteService) Update(c *gin.Context) {
 	ServiceUpdate(s, &Note{}, c)
 }
+
+func (s *NoteService) Register() {
+	ServiceRegister(s)
+}

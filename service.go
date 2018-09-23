@@ -9,6 +9,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func ServiceRegister(s RoutableService) {
+	r := s.Router()
+	r.POST("/", s.Create)
+	r.DELETE("/:id", s.Delete)
+	r.GET("/", s.Get)
+	r.GET("/:id", s.GetOne)
+	r.PATCH("/:id", s.Update)
+}
+
 func ServiceCreate(w DatabaseWriter, prefix string, r Identifiable, c *gin.Context) {
 	if err := c.ShouldBindJSON(r); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

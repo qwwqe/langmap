@@ -27,3 +27,7 @@ func (s *WordService) GetOne(c *gin.Context) {
 func (s *WordService) Update(c *gin.Context) {
 	ServiceUpdate(s, &Word{}, c)
 }
+
+func (s *WordService) Register() {
+	ServiceRegister(s)
+}

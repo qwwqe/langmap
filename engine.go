@@ -21,14 +21,7 @@ type Engine struct {
 
 func (e *Engine) AddService(s RoutableService) {
 	s.SetEngine(e)
-
-	g := s.Router()
-
-	g.POST("/", s.Create)
-	g.DELETE("/:id", s.Delete)
-	g.GET("/", s.Get)
-	g.GET("/:id", s.GetOne)
-	g.PATCH("/:id", s.Update)
+	s.Register()
 }
 
 func (e *Engine) Run(createTables, createIndexes, createForeignKeys bool) error {

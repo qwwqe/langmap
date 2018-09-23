@@ -27,3 +27,7 @@ func (s *LanguageService) GetOne(c *gin.Context) {
 func (s *LanguageService) Update(c *gin.Context) {
 	ServiceUpdate(s, &Language{}, c)
 }
+
+func (s *LanguageService) Register() {
+	ServiceRegister(s)
+}

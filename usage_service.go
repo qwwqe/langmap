@@ -27,3 +27,7 @@ func (s *UsageService) GetOne(c *gin.Context) {
 func (s *UsageService) Update(c *gin.Context) {
 	ServiceUpdate(s, &Usage{}, c)
 }
+
+func (s *UsageService) Register() {
+	ServiceRegister(s)
+}

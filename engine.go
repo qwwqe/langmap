@@ -167,13 +167,15 @@ func (e *Engine) Run(createTables, createIndexes, createForeignKeys bool) error 
 	e.Router.HTMLRender = multitemplate.New()
 
 	for _, s := range []RoutableService{
-		&DefinitionService{BaseService: BaseService{Prefix: "/api/definitions"}},
-		&NoteService{BaseService: BaseService{Prefix: "/api/notes"}},
-		&UsageService{BaseService: BaseService{Prefix: "/api/usages"}},
-		&WordService{BaseService: BaseService{Prefix: "/api/words"}},
-		&UserService{BaseService: BaseService{Prefix: "/api/users"}},
-		&LanguageService{BaseService: BaseService{Prefix: "/api/languages"}},
-		&InstanceService{BaseService: BaseService{Prefix: "/api/instances"}},
+		&CorpusService{BaseService: BaseService{Prefix: "/api/" + corpora.TableName}},
+		&DefinitionService{BaseService: BaseService{Prefix: "/api/" + definitions.TableName}},
+		&InstanceService{BaseService: BaseService{Prefix: "/api/" + instances.TableName}},
+		&LanguageService{BaseService: BaseService{Prefix: "/api/" + languages.TableName}},
+		&NoteService{BaseService: BaseService{Prefix: "/api/" + notes.TableName}},
+		&TokenizerService{BaseService: BaseService{Prefix: "/api/tokenizer"}},
+		&UsageService{BaseService: BaseService{Prefix: "/api/" + usages.TableName}},
+		&UserService{BaseService: BaseService{Prefix: "/api/" + users.TableName}},
+		&WordService{BaseService: BaseService{Prefix: "/api/" + words.TableName}},
 	} {
 		e.AddService(s)
 	}

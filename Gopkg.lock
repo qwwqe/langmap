@@ -44,6 +44,20 @@
   revision = "5a0f697c9ed9d68fef0116532c6e05cfeae00e55"
 
 [[projects]]
+  digest = "1:309a5c81275fda7e234a6601cfbfea00b68e881d981d6c3229d562d9a67bde07"
+  name = "github.com/ikawaha/kagome"
+  packages = [
+    "internal/da",
+    "internal/dic",
+    "internal/dic/data",
+    "internal/lattice",
+    "tokenizer",
+  ]
+  pruneopts = "UT"
+  revision = "f066253ac079561f78be9bbb04a5492aa61b6e29"
+  version = "v1.8.1"
+
+[[projects]]
   digest = "1:3e551bbb3a7c0ab2a2bf4660e7fcad16db089fdcfbb44b0199e62838038623ea"
   name = "github.com/json-iterator/go"
   packages = ["."]
@@ -122,6 +136,7 @@
     "github.com/gin-contrib/multitemplate",
     "github.com/gin-gonic/gin",
     "github.com/go-gorp/gorp",
+    "github.com/ikawaha/kagome/tokenizer",
     "github.com/lib/pq",
   ]
   solver-name = "gps-cdcl"

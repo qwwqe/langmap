@@ -12,7 +12,7 @@ type Instance struct {
 
 func (Instance) TableName() string { return "instances" }
 
-func (i *Instance) FromMap(m map[string]interface{}) {
+func (i *Instance) Inject(m map[string]interface{}) {
 	for k, v := range m {
 		switch k {
 		case "id":

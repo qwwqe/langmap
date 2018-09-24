@@ -12,52 +12,57 @@ type Definition struct {
 	Meaning       string `json:"meaning" db:"meaning"`
 	WordId        uint   `json:"word_id" db:"word_id"`
 	InstanceId    uint   `json:"instance_id" db:"instance_id"`
-
-	Word string `json:"word" db:"-"`
+	Word          *Word  `json:"word,omitempty" db:"-"`
 }
 
 func (Definition) TableName() string { return "definitions" }
 
-func (d *Definition) PreInsert(s gorp.SqlExecutor) error {
-	w := Word{}
+func (i *Definition) Inject(m map[string]interface{}) {
+	for k, v := range m {
+		switch k {
+		case "id":
+			i.Id = uint(v.(float64))
 
-	if err := s.SelectOne(&w, "select * from words where word = $1", d.Word); err != nil {
-		if err == sql.ErrNoRows {
-			w.Word = d.Word
+		case "pronunciation":
+			i.Pronunciation = v.(string)
 
-			if err := s.Insert(&w); err != nil {
-				return err
-			}
+		case "meaning":
+			i.Meaning = v.(string)
 
-		} else {
-			return err
+		case "word_id":
+			i.WordId = uint(v.(float64))
+
+		case "instance_id":
+			i.InstanceId = uint(v.(float64))
 
 		}
 	}
+}
 
-	d.WordId = w.Id
+func (t *Definition) PreInsert(s gorp.SqlExecutor) error {
+	if err := s.SelectOne(t.Word, "select id from "+t.Word.TableName()+" where word = $1", t.Word.Word); err != nil {
+		if err != sql.ErrNoRows {
+			return err
+		}
+
+		if err := s.Insert(t.Word); err != nil {
+			return err
+		}
+	}
+
+	t.WordId = t.Word.Id
 
 	return nil
 }
 
-func (d *Definition) FromMap(m map[string]interface{}) {
-	for k, v := range m {
-		switch k {
-		case "id":
-			d.Id = uint(v.(float64))
+func (t *Definition) Preload(db *gorp.DbMap) error {
+	w := &Word{}
 
-		case "pronunciation":
-			d.Pronunciation = v.(string)
-
-		case "meaning":
-			d.Meaning = v.(string)
-
-		case "word_id":
-			d.WordId = uint(v.(float64))
-
-		case "instance_id":
-			d.InstanceId = uint(v.(float64))
-
-		}
+	if err := db.SelectOne(w, "select * from "+w.TableName()+" where id = $1", t.WordId); err != nil {
+		return err
 	}
+
+	t.Word = w
+
+	return nil
 }

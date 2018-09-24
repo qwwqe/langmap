@@ -7,7 +7,7 @@ type Language struct {
 
 func (Language) TableName() string { return "languages" }
 
-func (l *Language) FromMap(m map[string]interface{}) {
+func (l *Language) Inject(m map[string]interface{}) {
 	for k, v := range m {
 		switch k {
 		case "id":

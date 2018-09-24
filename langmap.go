@@ -9,8 +9,8 @@ var (
 	Version = "0.0.0"
 )
 
-type MapInjectable interface {
-	FromMap(map[string]interface{})
+type Injectable interface {
+	Inject(map[string]interface{})
 }
 
 type Identifiable interface {

@@ -19,7 +19,7 @@ type CorpusWord struct {
 
 func (CorpusWord) TableName() string { return "corpus_words" }
 
-func (i *CorpusWord) FromMap(m map[string]interface{}) {
+func (i *CorpusWord) Inject(m map[string]interface{}) {
 	for k, v := range m {
 		switch k {
 		case "id":

@@ -13,7 +13,7 @@ type Corpus struct {
 
 func (Corpus) TableName() string { return "corpora" }
 
-func (i *Corpus) FromMap(m map[string]interface{}) {
+func (i *Corpus) Inject(m map[string]interface{}) {
 	for k, v := range m {
 		switch k {
 		case "id":

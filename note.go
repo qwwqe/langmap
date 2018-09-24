@@ -9,7 +9,7 @@ type Note struct {
 
 func (Note) TableName() string { return "notes" }
 
-func (n *Note) FromMap(m map[string]interface{}) {
+func (n *Note) Inject(m map[string]interface{}) {
 	for k, v := range m {
 		switch k {
 		case "id":

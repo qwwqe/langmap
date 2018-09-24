@@ -125,7 +125,7 @@ func ServiceGetOne(w DatabaseWriter, r IdentifiableTable, c *gin.Context) {
 }
 
 func ServiceUpdate(w DatabaseWriter, r interface {
-	MapInjectable
+	Injectable
 	IdentifiableTable
 }, c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 0)
@@ -163,7 +163,7 @@ func ServiceUpdate(w DatabaseWriter, r interface {
 		return
 	}
 
-	r.FromMap(d)
+	r.Inject(d)
 
 	if _, err := w.Db().Update(r); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{

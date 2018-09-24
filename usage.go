@@ -9,7 +9,7 @@ type Usage struct {
 
 func (Usage) TableName() string { return "usages" }
 
-func (u *Usage) FromMap(m map[string]interface{}) {
+func (u *Usage) Inject(m map[string]interface{}) {
 	for k, v := range m {
 		switch k {
 		case "id":

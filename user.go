@@ -7,7 +7,7 @@ type User struct {
 
 func (User) TableName() string { return "users" }
 
-func (u *User) FromMap(m map[string]interface{}) {
+func (u *User) Inject(m map[string]interface{}) {
 	for k, v := range m {
 		switch k {
 		case "id":

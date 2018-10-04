@@ -8,6 +8,10 @@ type LanguageService struct {
 	BaseService
 }
 
+func (s *LanguageService) Register() {
+	RegisterResource(s.Engine.Router.Group(s.Prefix), s)
+}
+
 func (s *LanguageService) Create(c *gin.Context) {
 	ServiceCreate(s, s.Prefix, &Language{}, c)
 }
@@ -26,8 +30,4 @@ func (s *LanguageService) GetOne(c *gin.Context) {
 
 func (s *LanguageService) Update(c *gin.Context) {
 	ServiceUpdate(s, &Language{}, c)
-}
-
-func (s *LanguageService) Register() {
-	ServiceRegister(s)
 }

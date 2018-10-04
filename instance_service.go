@@ -8,6 +8,10 @@ type InstanceService struct {
 	BaseService
 }
 
+func (s *InstanceService) Register() {
+	RegisterResource(s.Engine.Router.Group(s.Prefix), s)
+}
+
 func (s *InstanceService) Create(c *gin.Context) {
 	ServiceCreate(s, s.Prefix, &Instance{}, c)
 }
@@ -26,8 +30,4 @@ func (s *InstanceService) GetOne(c *gin.Context) {
 
 func (s *InstanceService) Update(c *gin.Context) {
 	ServiceUpdate(s, &Instance{}, c)
-}
-
-func (s *InstanceService) Register() {
-	ServiceRegister(s)
 }

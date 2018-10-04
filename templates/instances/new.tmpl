@@ -1,0 +1,49 @@
+{{define "title"}}New Instance{{end}}
+
+{{define "content"}}
+  <h1>{{block "title" .}}{{end}}</h1>
+  <form method="post" action="/instances">
+    <table>
+      <tr>
+        <td>
+          <label for="name">Name:</label>
+        </td>
+        <td>
+          <input type="text" name="name" id="name">
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="user">User:</label>
+        </td>
+        <td>
+          <select id="user" name="user">
+            {{range .Users}}
+              <option value="{{.Id}}">{{.Name}}</option>
+            {{end}}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="language">Language:</label>
+        </td>
+        <td>
+          <select id="language" name="language">
+            {{range .Languages}}
+              <option value="{{.Id}}">{{.Tag}}</option>
+            {{end}}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          &nbsp;
+        </td>
+        <td>
+          <button type="submit">Save</button>
+        </td>
+      </tr>
+    </table>
+  </form>
+{{end}}

@@ -8,6 +8,10 @@ type WordService struct {
 	BaseService
 }
 
+func (s *WordService) Register() {
+	RegisterResource(s.Engine.Router.Group(s.Prefix), s)
+}
+
 func (s *WordService) Create(c *gin.Context) {
 	ServiceCreate(s, s.Prefix, &Word{}, c)
 }
@@ -26,8 +30,4 @@ func (s *WordService) GetOne(c *gin.Context) {
 
 func (s *WordService) Update(c *gin.Context) {
 	ServiceUpdate(s, &Word{}, c)
-}
-
-func (s *WordService) Register() {
-	ServiceRegister(s)
 }

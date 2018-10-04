@@ -9,8 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ServiceRegister(s RoutableService) {
-	r := s.Router()
+func RegisterResource(r *gin.RouterGroup, s RoutableResource) {
 	r.POST("/", s.Create)
 	r.DELETE("/:id", s.Delete)
 	r.GET("/", s.Get)
@@ -27,7 +26,7 @@ func ServiceCreate(w DatabaseWriter, prefix string, r Identifiable, c *gin.Conte
 		return
 	}
 
-	if err := w.Db().Insert(r); err != nil {
+	if err := InsertOne(w.Db(), r); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"reason": ErrDatabaseFailure,
 			"errors": NewErrorsJSON([]error{err}),
@@ -46,7 +45,10 @@ func ServiceCreate(w DatabaseWriter, prefix string, r Identifiable, c *gin.Conte
 	c.Status(http.StatusCreated)
 }
 
-func ServiceDelete(w DatabaseWriter, r IdentifiableTable, c *gin.Context) {
+func ServiceDelete(w DatabaseWriter, r interface {
+	IdentifiableTable
+	Preloadable
+}, c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 0)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -56,7 +58,7 @@ func ServiceDelete(w DatabaseWriter, r IdentifiableTable, c *gin.Context) {
 		return
 	}
 
-	if err := w.Db().SelectOne(r, "select id from "+r.TableName()+" where id = $1", id); err != nil {
+	if err := LoadOne(w.Db(), r, uint(id)); err != nil {
 		if err == sql.ErrNoRows {
 			c.JSON(http.StatusNotFound, gin.H{
 				"reason": ErrDatabaseNotFound,
@@ -95,7 +97,10 @@ func ServiceGet(w DatabaseWriter, t IdentifiableTable, r interface{}, c *gin.Con
 	c.JSON(http.StatusOK, gin.H{"data": r})
 }
 
-func ServiceGetOne(w DatabaseWriter, r IdentifiableTable, c *gin.Context) {
+func ServiceGetOne(w DatabaseWriter, r interface {
+	IdentifiableTable
+	Preloadable
+}, c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 0)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -105,7 +110,7 @@ func ServiceGetOne(w DatabaseWriter, r IdentifiableTable, c *gin.Context) {
 		return
 	}
 
-	if err := w.Db().SelectOne(r, "select * from "+r.TableName()+" where id = $1", id); err != nil {
+	if err := LoadOne(w.Db(), r, uint(id)); err != nil {
 		if err == sql.ErrNoRows {
 			c.JSON(http.StatusNotFound, gin.H{
 				"reason": ErrDatabaseNotFound,
@@ -121,12 +126,15 @@ func ServiceGetOne(w DatabaseWriter, r IdentifiableTable, c *gin.Context) {
 		return
 	}
 
+	r.Preload(w.Db())
+
 	c.JSON(http.StatusOK, gin.H{"data": r})
 }
 
 func ServiceUpdate(w DatabaseWriter, r interface {
-	Injectable
 	IdentifiableTable
+	Injectable
+	Preloadable
 }, c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 0)
 	if err != nil {
@@ -137,7 +145,7 @@ func ServiceUpdate(w DatabaseWriter, r interface {
 		return
 	}
 
-	if err := w.Db().SelectOne(r, "select * from "+r.TableName()+" where id = $1", id); err != nil {
+	if err := LoadOne(w.Db(), r, uint(id)); err != nil {
 		if err == sql.ErrNoRows {
 			c.JSON(http.StatusNotFound, gin.H{
 				"reason": ErrDatabaseNotFound,

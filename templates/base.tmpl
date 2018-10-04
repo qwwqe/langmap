@@ -1,9 +1,23 @@
 <!doctype html>
 <html>
   <head>
-    <title>{{block "title" .}}the title{{end}}</title>
+    <title>{{block "title" .}}{{end}}</title>
+    <style>
+      body {
+        width: 500px;
+        margin: 0 auto;
+      }
+
+      table {
+        width: 100%;
+      }
+
+      table thead {
+        background: #EEEEEE;
+      }
+    </style>
   </head>
   <body>
-    {{block "content" .}}the content{{end}}
+    {{block "content" .}}{{end}}
   </body>
 </html>

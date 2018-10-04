@@ -1,0 +1,34 @@
+{{define "title"}}Definitions{{end}}
+
+{{define "content"}}
+  <h1>{{block "title" .}}{{end}}</h1>
+
+  <table>
+    <thead>
+      <th>
+        Word
+      </th>
+      <th>
+        Pronunciation
+      </th>
+      <th>
+        Meaning
+      </th>
+    </thead>
+    <tbody>
+      {{- range .Definitions}}
+        <tr>
+          <td>
+            {{.Word.Word}}
+          </td>
+          <td>
+            {{.Pronunciation}}
+          </td>
+          <td>
+            {{.Meaning}}
+          </td>
+        </tr>
+      {{- end}}
+    </tbody>
+  </table>
+{{end}}

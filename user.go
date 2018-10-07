@@ -9,11 +9,10 @@ type User struct {
 
 func (User) TableName() string { return "users" }
 
-func LoadUsers(db *gorp.DbMap) ([]*User, error) {
+func LoadUsers(db *gorp.DbMap, f Filter) ([]*User, error) {
 	r := []*User{}
-	q := "select * from " + User{}.TableName()
 
-	if _, err := db.Select(&r, q); err != nil {
+	if _, err := db.Select(&r, SelectQuery(User{}, f), f.Values...); err != nil {
 		return nil, err
 	}
 

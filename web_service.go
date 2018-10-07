@@ -44,13 +44,13 @@ func (s *WebService) Register() {
 }
 
 func (s *WebService) Index(c *gin.Context) {
-	i, _ := LoadInstances(s.Engine.DB)
+	i, _ := LoadInstances(s.Engine.DB, Filter{})
 	c.HTML(http.StatusOK, "instances_list", gin.H{"Instances": i})
 }
 
 func (s *WebService) NewInstance(c *gin.Context) {
-	users, _ := LoadUsers(s.Engine.DB)
-	languages, _ := LoadLanguages(s.Engine.DB)
+	users, _ := LoadUsers(s.Engine.DB, Filter{})
+	languages, _ := LoadLanguages(s.Engine.DB, Filter{})
 
 	c.HTML(http.StatusOK, "instances_new", gin.H{
 		"Users":     users,
@@ -72,9 +72,9 @@ func (s *WebService) ShowInstance(c *gin.Context) {
 	i := Instance{}
 	LoadOne(s.Engine.DB, &i, uint(id))
 
-	collections, _ := LoadCollections(s.Engine.DB, uint(id))
-	definitions, _ := LoadDefinitions(s.Engine.DB, uint(id))
-	notes, _ := LoadNotes(s.Engine.DB)
+	collections, _ := LoadCollections(s.Engine.DB, NewFilter("where instance_id = $1", id))
+	definitions, _ := LoadDefinitions(s.Engine.DB, NewFilter("where instance_id = $1", id))
+	notes, _ := LoadNotes(s.Engine.DB, NewFilter("where instance_id = $1", id))
 
 	c.HTML(http.StatusOK, "instances_show", gin.H{
 		"Collections": collections,
@@ -91,7 +91,7 @@ func (s *WebService) ListDefinitions(c *gin.Context) {
 		return
 	}
 
-	definitions, _ := LoadDefinitions(s.Engine.DB, uint(id))
+	definitions, _ := LoadDefinitions(s.Engine.DB, NewFilter("where instance_id = $1", id))
 
 	log.Println(definitions)
 	c.HTML(http.StatusOK, "definitions_list", gin.H{

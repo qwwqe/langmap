@@ -183,3 +183,26 @@ func ServiceUpdate(w DatabaseWriter, r interface {
 
 	c.Status(http.StatusNoContent)
 }
+
+func ApiResponseJSON(r interface{}, reason string, err error) (int, gin.H) {
+	switch err {
+	case nil:
+		return http.StatusOK, gin.H{"data": r}
+
+	case sql.ErrNoRows:
+		return http.StatusNotFound, nil
+
+	default:
+		status := http.StatusInternalServerError
+
+		if reason == ErrInvalidResourceId {
+			status = http.StatusBadRequest
+		}
+
+		return status, gin.H{
+			"reason": reason,
+			"errors": NewErrorsJSON([]error{err}),
+		}
+
+	}
+}

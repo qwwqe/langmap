@@ -81,7 +81,7 @@ func (s *CorpusService) Tokenize(c *gin.Context) {
 		return
 	}
 
-	if i.Preload(s.Db()); err != nil {
+	if err := i.Preload(s.Db()); err != nil {
 		if err == sql.ErrNoRows {
 			c.JSON(http.StatusNotFound, gin.H{
 				"reason": ErrDatabaseNotFound,

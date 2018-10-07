@@ -13,11 +13,10 @@ type Instance struct {
 
 func (Instance) TableName() string { return "instances" }
 
-func LoadInstances(db *gorp.DbMap) ([]*Instance, error) {
+func LoadInstances(db *gorp.DbMap, f Filter) ([]*Instance, error) {
 	r := []*Instance{}
-	q := "select * from " + Instance{}.TableName()
 
-	if _, err := db.Select(&r, q); err != nil {
+	if _, err := db.Select(&r, SelectQuery(Instance{}, f), f.Values...); err != nil {
 		return nil, err
 	}
 

@@ -9,11 +9,10 @@ type Language struct {
 
 func (Language) TableName() string { return "languages" }
 
-func LoadLanguages(db *gorp.DbMap) ([]*Language, error) {
+func LoadLanguages(db *gorp.DbMap, f Filter) ([]*Language, error) {
 	r := []*Language{}
-	q := "select * from " + Language{}.TableName()
 
-	if _, err := db.Select(&r, q); err != nil {
+	if _, err := db.Select(&r, SelectQuery(Language{}, f), f.Values...); err != nil {
 		return nil, err
 	}
 

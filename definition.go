@@ -17,11 +17,10 @@ type Definition struct {
 
 func (Definition) TableName() string { return "definitions" }
 
-func LoadDefinitions(db *gorp.DbMap, id uint) ([]*Definition, error) {
+func LoadDefinitions(db *gorp.DbMap, f Filter) ([]*Definition, error) {
 	r := []*Definition{}
-	q := "select * from " + Definition{}.TableName() + " where instance_id = $1"
 
-	if _, err := db.Select(&r, q, id); err != nil {
+	if _, err := db.Select(&r, SelectQuery(Definition{}, f), f.Values...); err != nil {
 		return nil, err
 	}
 

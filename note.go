@@ -11,11 +11,10 @@ type Note struct {
 
 func (Note) TableName() string { return "notes" }
 
-func LoadNotes(db *gorp.DbMap) ([]*Note, error) {
+func LoadNotes(db *gorp.DbMap, f Filter) ([]*Note, error) {
 	r := []*Note{}
-	q := "select * from " + Note{}.TableName()
 
-	if _, err := db.Select(&r, q); err != nil {
+	if _, err := db.Select(&r, SelectQuery(Note{}, f), f.Values...); err != nil {
 		return nil, err
 	}
 

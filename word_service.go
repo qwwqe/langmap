@@ -1,6 +1,8 @@
 package langmap
 
 import (
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,11 +23,29 @@ func (s *WordService) Delete(c *gin.Context) {
 }
 
 func (s *WordService) Get(c *gin.Context) {
-	ServiceGet(s, Word{}, &[]Word{}, c)
+	r, err := LoadWords(s.Engine.DB, Filter{})
+	if err != nil {
+		c.JSON(ApiResponseJSON(r, ErrDatabaseFailure, err))
+		return
+	}
+	c.JSON(ApiResponseJSON(r, "", nil))
 }
 
 func (s *WordService) GetOne(c *gin.Context) {
-	ServiceGetOne(s, &Word{}, c)
+	r := Word{}
+
+	id, err := strconv.ParseUint(c.Param("id"), 10, 0)
+	if err != nil {
+		c.JSON(ApiResponseJSON(r, ErrInvalidResourceId, err))
+		return
+	}
+
+	if err := LoadOne(s.Engine.DB, &r, uint(id)); err != nil {
+		c.JSON(ApiResponseJSON(r, ErrDatabaseFailure, err))
+		return
+	}
+
+	c.JSON(ApiResponseJSON(r, "", nil))
 }
 
 func (s *WordService) Update(c *gin.Context) {

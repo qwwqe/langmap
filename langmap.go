@@ -44,10 +44,16 @@ func LoadOne(db *gorp.DbMap, r interface {
 	IdentifiableTable
 	Preloadable
 }, id uint) error {
-	if err := db.SelectOne(r, "select * from "+r.TableName()+" where id = $1", id); err != nil {
+	f := NewFilter("where id = $1", id)
+
+	if err := db.SelectOne(r, SelectQuery(r, f), f.Values...); err != nil {
 		return err
 	}
-	r.Preload(db)
+
+	if err := r.Preload(db); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -55,6 +61,7 @@ func InsertOne(db *gorp.DbMap, r interface{}) error {
 	if err := db.Insert(r); err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -75,4 +82,12 @@ func AddForeignKey(db *gorp.DbMap, table *gorp.TableMap, key string, reference *
 
 func AddTable(db *gorp.DbMap, i IdentifiableTable) *gorp.TableMap {
 	return db.AddTableWithName(i, i.TableName()).SetKeys(true, "id")
+}
+
+func SelectQuery(i IdentifiableTable, f Filter) string {
+	q := "select * from " + i.TableName()
+	if f.Query != "" {
+		q += " " + f.Query
+	}
+	return q
 }

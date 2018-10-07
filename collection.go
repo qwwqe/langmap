@@ -10,11 +10,10 @@ type Collection struct {
 
 func (Collection) TableName() string { return "collections" }
 
-func LoadCollections(db *gorp.DbMap, id uint) ([]*Collection, error) {
+func LoadCollections(db *gorp.DbMap, f Filter) ([]*Collection, error) {
 	r := []*Collection{}
-	q := "select * from " + Collection{}.TableName() + " where instance_id = $1"
 
-	if _, err := db.Select(&r, q, id); err != nil {
+	if _, err := db.Select(&r, SelectQuery(Collection{}, f), f.Values...); err != nil {
 		return nil, err
 	}
 

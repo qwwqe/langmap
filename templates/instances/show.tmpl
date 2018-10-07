@@ -1,0 +1,38 @@
+{{define "title"}}{{.Instance.Name}}{{end}}
+
+{{define "content"}}
+  <h1>{{block "title" .}}{{end}}</h1>
+
+  <ul>
+    <li>
+      <a href="/instance/{{.Instance.Id}}/definitions/new">Add Definition</a>
+    </li>
+    <li>
+      <a href="/instance/{{.Instance.Id}}/notes/new">Add Note</a>
+    </li>
+    <li>
+      <a href="/instance/{{.Instance.Id}}/collections/new">Add Collection</a>
+    </li>
+  </ul>
+
+  <table>
+    <thead>
+      <th>Section</th>
+      <th>Count</th>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Definitions</td>
+        <td><a href="/instance/{{.Instance.Id}}/definitions">{{len .Definitions}}</a></td>
+      </tr>
+      <tr>
+        <td>Notes</td>
+        <td><a href="/instance/{{.Instance.Id}}/notes">{{len .Notes}}</a></td>
+      </tr>
+      <tr>
+        <td>Collections</td>
+        <td><a href="/instance/{{.Instance.Id}}/collections">{{len .Collections}}</a></td>
+      </tr>
+    </tbody>
+  </table>
+{{end}}

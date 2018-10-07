@@ -8,6 +8,10 @@ type UsageService struct {
 	BaseService
 }
 
+func (s *UsageService) Register() {
+	RegisterResource(s.Engine.Router.Group(s.Prefix), s)
+}
+
 func (s *UsageService) Create(c *gin.Context) {
 	ServiceCreate(s, s.Prefix, &Usage{}, c)
 }
@@ -26,8 +30,4 @@ func (s *UsageService) GetOne(c *gin.Context) {
 
 func (s *UsageService) Update(c *gin.Context) {
 	ServiceUpdate(s, &Usage{}, c)
-}
-
-func (s *UsageService) Register() {
-	ServiceRegister(s)
 }

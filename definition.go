@@ -17,6 +17,20 @@ type Definition struct {
 
 func (Definition) TableName() string { return "definitions" }
 
+func LoadDefinitions(db *gorp.DbMap, f Filter) ([]*Definition, error) {
+	r := []*Definition{}
+
+	if _, err := db.Select(&r, SelectQuery(Definition{}, f), f.Values...); err != nil {
+		return nil, err
+	}
+
+	for _, i := range r {
+		i.Preload(db)
+	}
+
+	return r, nil
+}
+
 func (i *Definition) Inject(m map[string]interface{}) {
 	for k, v := range m {
 		switch k {
@@ -55,14 +69,9 @@ func (t *Definition) PreInsert(s gorp.SqlExecutor) error {
 	return nil
 }
 
-func (t *Definition) Preload(db *gorp.DbMap) error {
-	w := &Word{}
-
-	if err := db.SelectOne(w, "select * from "+w.TableName()+" where id = $1", t.WordId); err != nil {
-		return err
-	}
-
-	t.Word = w
+func (r *Definition) Preload(db *gorp.DbMap) error {
+	r.Word = &Word{}
+	LoadOne(db, r.Word, r.WordId)
 
 	return nil
 }

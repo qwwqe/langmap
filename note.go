@@ -1,5 +1,7 @@
 package langmap
 
+import "github.com/go-gorp/gorp"
+
 type Note struct {
 	BaseTable
 	Title      string `json:"title" db:"title"`
@@ -8,6 +10,20 @@ type Note struct {
 }
 
 func (Note) TableName() string { return "notes" }
+
+func LoadNotes(db *gorp.DbMap, f Filter) ([]*Note, error) {
+	r := []*Note{}
+
+	if _, err := db.Select(&r, SelectQuery(Note{}, f), f.Values...); err != nil {
+		return nil, err
+	}
+
+	for _, i := range r {
+		i.Preload(db)
+	}
+
+	return r, nil
+}
 
 func (n *Note) Inject(m map[string]interface{}) {
 	for k, v := range m {

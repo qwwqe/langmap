@@ -1,0 +1,86 @@
+{{define "title"}}New Instance{{end}}
+
+{{define "content"}}
+  <h1>{{block "title" .}}{{end}}</h1>
+  <form method="post" action="/instance/{{.InstanceId}}/definitions">
+    <input type="hidden" name="instance_id" value="{{.InstanceId}}">
+    <fieldset>
+      <legend>Word</legend>
+      <table>
+        <tbody>
+          <tr>
+            <td>
+              <label id="word">Word:</label>
+            </td>
+            <td>
+              <input type="text" name="word" id="word">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </fieldset>
+    <fieldset>
+      <legend>Definitions</legend>
+      <table>
+        <tbody id="definitions">
+          <tr class="pronunciation">
+            <td>
+              <label id="pronunciation-1">Pronunciation:</label>
+            </td>
+            <td>
+              <input type="text" name="pronunciation[]" id="pronunciation-1">
+            </td>
+          </tr>
+          <tr class="definition">
+            <td>
+              <label id="definition-1">Meaning:</label>
+            </td>
+            <td>
+              <input type="text" name="meaning[]" id="meaning-1">
+            </td>
+          </tr>
+        </tbody>
+        <tbody>
+          <tr>
+            <td>
+              &nbsp;
+            </td>
+            <td>
+              <button type="button" onclick="return AddDefinition()">Add Definition</button>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              &nbsp;
+            </td>
+            <td>
+              <button type="submit">Save</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </fieldset>
+  </form>
+  <script>
+    function AddDefinition() {
+      var meaning = document.getElementsByClassName("definition")[0].cloneNode(true);
+      var minputs = meaning.getElementsByTagName("input");
+
+      var pronunciation = document.getElementsByClassName("pronunciation")[0].cloneNode(true);
+      var pinputs = pronunciation.getElementsByTagName("input");
+
+      for (var i = 0; i < minputs.length; i++) {
+        minputs[i].value = "";
+      }
+
+      for (var i = 0; i < pinputs.length; i++) {
+        pinputs[i].value = "";
+      }
+
+      document.getElementById("definitions").appendChild(pronunciation);
+      document.getElementById("definitions").appendChild(meaning);
+
+      return false;
+    }
+  </script>
+{{end}}

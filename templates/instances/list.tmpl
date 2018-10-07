@@ -1,0 +1,21 @@
+{{define "title"}}Instances{{end}}
+
+{{define "content"}}
+  <h1>{{block "title" .}}{{end}}</h1>
+  <table>
+    <thead>
+      <th>User</th>
+      <th>Language</th>
+      <th>Name</th>
+    </thead>
+    <tbody>
+      {{- range .Instances}}
+        <tr>
+          <td>{{.User.Name}}</td>
+          <td>{{.Language.Tag}}</td>
+          <td><a href="/instance/{{.Id}}">{{.Name}}</td>
+        </tr>
+      {{- end}}
+    </tbody>
+  </table>
+{{end}}

@@ -8,6 +8,10 @@ type DefinitionService struct {
 	BaseService
 }
 
+func (s *DefinitionService) Register() {
+	RegisterResource(s.Engine.Router.Group(s.Prefix), s)
+}
+
 func (s *DefinitionService) Create(c *gin.Context) {
 	ServiceCreate(s, s.Prefix, &Definition{}, c)
 }
@@ -26,8 +30,4 @@ func (s *DefinitionService) GetOne(c *gin.Context) {
 
 func (s *DefinitionService) Update(c *gin.Context) {
 	ServiceUpdate(s, &Definition{}, c)
-}
-
-func (s *DefinitionService) Register() {
-	ServiceRegister(s)
 }

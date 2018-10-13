@@ -1,0 +1,230 @@
+digraph langsuite {
+  graph [pad="0.5", nodesep="0.25", ranksep="3", bgcolor=grey77, fontname="monospace"];
+  node [shape=plain, fontname="monospace"];
+  rankdir=RL;
+
+  subgraph common {
+    Tag [label=<<table bgcolor="#EEEEEE" border="0" cellborder="1" cellspacing="0" cellpadding="10">
+      <tr><td align="center" bgcolor="#333333"><b><font color="#EEEEEE">tags</font></b></td></tr>
+      <tr><td align="left" port="Id">id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left">name <font color="grey53">string</font></td></tr>
+      <tr><td align="left" port="InstanceId">instance_id <font color="grey53">uint</font></td></tr>
+    </table>>];
+
+    User [label=<<table bgcolor="#EEEEEE" border="0" cellborder="1" cellspacing="0" cellpadding="10">
+      <tr><td align="center" bgcolor="#333333"><b><font color="#EEEEEE">users</font></b></td></tr>
+      <tr><td align="left" port="Id">id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left">name <font color="grey53">string</font></td></tr>
+    </table>>];
+
+    Language [label=<<table bgcolor="#EEEEEE" border="0" cellborder="1" cellspacing="0" cellpadding="10">
+      <tr><td align="center" bgcolor="#333333"><b><font color="#EEEEEE">languages</font></b></td></tr>
+      <tr><td align="left" port="Id">id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left">tag <font color="grey53">string</font></td></tr>
+    </table>>];
+
+    Instance [label=<<table bgcolor="#EEEEEE" border="0" cellborder="1" cellspacing="0" cellpadding="10">
+      <tr><td align="center" bgcolor="#333333"><b><font color="#EEEEEE">instances</font></b></td></tr>
+      <tr><td align="left" port="Id">id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left">name <font color="grey53">string</font></td></tr>
+      <tr><td align="left" port="UserId">user_id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left" port="LanguageId">language_id <font color="grey53">uint</font></td></tr>
+    </table>>];
+
+    Usage [label=<<table bgcolor="#EEEEEE" border="0" cellborder="1" cellspacing="0" cellpadding="10">
+      <tr><td align="center" bgcolor="#333333"><b><font color="#EEEEEE">usages</font></b></td></tr>
+      <tr><td align="left" port="Id">id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left" port="DefinitionId">definition_id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left" port="CorpusId">corpus_id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left" port="InstanceId">instance_id <font color="grey53">uint</font></td></tr>
+    </table>>];
+
+    Highlight [label=<<table bgcolor="#EEEEEE" border="0" cellborder="1" cellspacing="0" cellpadding="10">
+      <tr><td align="center" bgcolor="#333333"><b><font color="#EEEEEE">highlights</font></b></td></tr>
+      <tr><td align="left" port="id">id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left" port="CorpusId">corpus_id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left" port="CorpusWordId">corpus_word_id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left" port="InstanceId">instance_id <font color="grey53">uint</font></td></tr>
+    </table>>];
+
+    Word [label=<<table bgcolor="#EEEEEE" border="0" cellborder="1" cellspacing="0" cellpadding="10">
+      <tr><td align="center" bgcolor="#333333"><b><font color="#EEEEEE">words</font></b></td></tr>
+      <tr><td align="left" port="Id">id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left">word <font color="grey53">string</font></td></tr>
+    </table>>];
+  };
+
+  subgraph langmap {
+    Definition [label=<<table bgcolor="#EEEEEE" border="0" cellborder="1" cellspacing="0" cellpadding="10">
+      <tr><td align="center" bgcolor="darkslategrey"><b><font color="#EEEEEE">definitions</font></b></td></tr>
+      <tr><td align="left" port="Id">id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left">pronunciation <font color="grey53">string</font></td></tr>
+      <tr><td align="left">meaning <font color="grey53">string</font></td></tr>
+      <tr><td align="left" port="WordId">word_id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left" port="InstanceId">instance_id <font color="grey53">uint</font></td></tr>
+    </table>>];
+
+    Note [label=<<table bgcolor="#EEEEEE" border="0" cellborder="1" cellspacing="0" cellpadding="10">
+      <tr><td align="center" bgcolor="darkslategrey"><b><font color="#EEEEEE">notes</font></b></td></tr>
+      <tr><td align="left" port="Id">id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left">title <font color="grey53">string</font></td></tr>
+      <tr><td align="left">comment <font color="grey53">string</font></td></tr>
+      <tr><td align="left" port="InstanceId">instance_id <font color="grey53">uint</font></td></tr>
+    </table>>];
+
+    Collection [label=<<table bgcolor="#EEEEEE" border="0" cellborder="1" cellspacing="0" cellpadding="10">
+      <tr><td align="center" bgcolor="darkslategrey"><b><font color="#EEEEEE">collections</font></b></td></tr>
+      <tr><td align="left" port="Id">id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left">name <font color="grey53">string</font></td></tr>
+      <tr><td align="left" port="InstanceId">instance_id <font color="grey53">uint</font></td></tr>
+    </table>>];
+
+    NoteTag [label=<<table bgcolor="#EEEEEE" border="0" cellborder="1" cellspacing="0" cellpadding="10">
+      <tr><td align="center" bgcolor="darkslategrey"><b><font color="#EEEEEE">note_tags</font></b></td></tr>
+      <tr><td align="left">id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left" port="NoteId">note_id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left" port="TagId">tag_id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left" port="InstanceId">instance_id <font color="grey53">uint</font></td></tr>
+    </table>>];
+
+    NoteDefinition [label=<<table bgcolor="#EEEEEE" border="0" cellborder="1" cellspacing="0" cellpadding="10">
+      <tr><td align="center" bgcolor="darkslategrey"><b><font color="#EEEEEE">note_definitions</font></b></td></tr>
+      <tr><td align="left">id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left" port="NoteId">note_id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left" port="DefinitionId">definition_id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left" port="InstanceId">instance_id <font color="grey53">uint</font></td></tr>
+    </table>>];
+
+    NoteCollection [label=<<table bgcolor="#EEEEEE" border="0" cellborder="1" cellspacing="0" cellpadding="10">
+      <tr><td align="center" bgcolor="darkslategrey"><b><font color="#EEEEEE">note_collections</font></b></td></tr>
+      <tr><td align="left">id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left" port="CollectionId">collection_id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left" port="NoteId">note_id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left" port="InstanceId">instance_id <font color="grey53">uint</font></td></tr>
+    </table>>];
+
+    CollectionTag [label=<<table bgcolor="#EEEEEE" border="0" cellborder="1" cellspacing="0" cellpadding="10">
+      <tr><td align="center" bgcolor="darkslategrey"><b><font color="#EEEEEE">collection_tags</font></b></td></tr>
+      <tr><td align="left">id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left" port="CollectionId">collection_id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left" port="TagId">tag_id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left" port="InstanceId">instance_id <font color="grey53">uint</font></td></tr>
+    </table>>];
+
+    DefinitionLink [label=<<table bgcolor="#EEEEEE" border="0" cellborder="1" cellspacing="0" cellpadding="10">
+      <tr><td align="center" bgcolor="darkslategrey"><b><font color="#EEEEEE">definition_links</font></b></td></tr>
+      <tr><td align="left">id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left" port="TypeId">type_id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left" port="Definition1Id">definition1_id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left" port="Definition2Id">definition2_id <font color="grey53">uint</font></td></tr>
+    </table>>];
+
+    DefinitionLinkType [label=<<table bgcolor="#EEEEEE" border="0" cellborder="1" cellspacing="0" cellpadding="10">
+      <tr><td align="center" bgcolor="darkslategrey"><b><font color="#EEEEEE">definition_link_types</font></b></td></tr>
+      <tr><td align="left" port="Id">id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left">name <font color="grey53">string</font></td></tr>
+    </table>>];
+  };
+
+  subgraph tokenizer {
+    Corpus [label=<<table bgcolor="#EEEEEE" border="0" cellborder="1" cellspacing="0" cellpadding="10">
+      <tr><td align="center" bgcolor="orangered4"><b><font color="#EEEEEE">corpora</font></b></td></tr>
+      <tr><td align="left" port="id">id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left">name <font color="grey53">string</font></td></tr>
+      <tr><td align="left">md5 <font color="grey53">string</font></td></tr>
+      <tr><td align="left">browsable <font color="grey53">bool</font></td></tr>
+      <tr><td align="left" port="InstanceId">instance_id <font color="grey53">uint</font></td></tr>
+    </table>>];
+
+    CorpusWord [label=<<table bgcolor="#EEEEEE" border="0" cellborder="1" cellspacing="0" cellpadding="10">
+      <tr><td align="center" bgcolor="orangered4"><b><font color="#EEEEEE">corpus_words</font></b></td></tr>
+      <tr><td align="left" port="id">id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left">pos <font color="grey53">uint</font></td></tr>
+      <tr><td align="left">sentence <font color="grey53">uint</font></td></tr>
+      <tr><td align="left">semantic <font color="grey53">bool</font></td></tr>
+      <tr><td align="left" port="CorpusId">corpus_id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left" port="WordId">word_id <font color="grey53">uint</font></td></tr>
+    </table>>];
+
+    CorpusTag [label=<<table bgcolor="#EEEEEE" border="0" cellborder="1" cellspacing="0" cellpadding="10">
+      <tr><td align="center" bgcolor="orangered4"><b><font color="#EEEEEE">corpus_tags</font></b></td></tr>
+      <tr><td align="left" port="id">id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left" port="CorpusId">corpus_id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left" port="TagId">tag_id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left" port="InstanceId">instance_id <font color="grey53">uint</font></td></tr>
+    </table>>];
+
+    Lexica [label=<<table bgcolor="#EEEEEE" border="0" cellborder="1" cellspacing="0" cellpadding="10">
+      <tr><td align="center" bgcolor="orangered4"><b><font color="#EEEEEE">lexica</font></b></td></tr>
+      <tr><td align="left" port="id">id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left">uri <font color="grey53">string</font></td></tr>
+      <tr><td align="left">name <font color="grey53">string</font></td></tr>
+      <tr><td align="left" port="LanguageId">language_id <font color="grey53">uint</font></td></tr>
+    </table>>];
+
+    Wordlist [label=<<table bgcolor="#EEEEEE" border="0" cellborder="1" cellspacing="0" cellpadding="10">
+      <tr><td align="center" bgcolor="orangered4"><b><font color="#EEEEEE">wordlists</font></b></td></tr>
+      <tr><td align="left" port="id">id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left">name <font color="grey53">string</font></td></tr>
+      <tr><td align="left" port="InstanceId">instance_id <font color="grey53">uint</font></td></tr>
+    </table>>];
+
+    WordlistItem [label=<<table bgcolor="#EEEEEE" border="0" cellborder="1" cellspacing="0" cellpadding="10">
+      <tr><td align="center" bgcolor="orangered4"><b><font color="#EEEEEE">wordlist_items</font></b></td></tr>
+      <tr><td align="left" port="id">id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left">name <font color="grey53">string</font></td></tr>
+      <tr><td align="left" port="WordlistId">wordlist_id <font color="grey53">uint</font></td></tr>
+      <tr><td align="left" port="WordId">word_id <font color="grey53">uint</font></td></tr>
+    </table>>];
+  };
+
+  CollectionTag:CollectionId -> Collection:Id [color=paleturquoise4];
+  NoteCollection:CollectionId -> Collection:Id [color=paleturquoise4];
+
+  CollectionTag:TagId -> Tag:Id [color=goldenrod4];
+  CorpusTag:TagId -> Tag:Id [color=goldenrod4];
+  NoteTag:TagId -> Tag:Id [color=goldenrod4];
+
+  NoteCollection:NoteId -> Note:Id [color=deeppink3];
+  NoteDefinition:NoteId -> Note:Id [color=deeppink3];
+  NoteTag:NoteId -> Note:Id [color=deeppink3];
+
+  CorpusTag:CorpusId -> Corpus:Id [color=darkslateblue];
+  CorpusWord:CorpusId -> Corpus:Id [color=darkslateblue];
+  Highlight:CorpusId -> Corpus:Id [color=darkslateblue];
+  Usage:CorpusId -> Corpus:Id [color=darkslateblue];
+
+  CorpusWord:WordId -> Word:Id [color=dodgerblue2];
+  WordlistItem:WordId -> Word:Id [color=dodgerblue2];
+  Definition:WordId -> Word:Id [color=dodgerblue2];
+
+  Highlight:CorpusWordId -> CorpusWord:Id [color=darkolivegreen];
+
+  Collection:InstanceId -> Instance:Id [color=brown2];
+  CollectionTag:InstanceId -> Instance:Id [color=brown2];
+  Corpus:InstanceId -> Instance:Id [color=brown2];
+  CorpusTag:InstanceId -> Instance:Id [color=brown2];
+  Definition:InstanceId -> Instance:Id [color=brown2];
+  Highlight:InstanceId -> Instance:Id [color=brown2];
+  Note:InstanceId -> Instance:Id [color=brown2];
+  NoteCollection:InstanceId -> Instance:Id [color=brown2];
+  NoteDefinition:InstanceId -> Instance:Id [color=brown2];
+  NoteTag:InstanceId -> Instance:Id [color=brown2];
+  Tag:InstanceId -> Instance:Id [color=brown2];
+  Usage:InstanceId -> Instance:Id [color=brown2];
+  Wordlist:InstanceId -> Instance:Id [color=brown2];
+
+  DefinitionLink:Definition1Id -> Definition:Id [color=seagreen4];
+  DefinitionLink:Definition2Id -> Definition:Id [color=seagreen4];
+  NoteDefinition:DefinitionId -> Definition:Id [color=seagreen4];
+  Usage:DefinitionId -> Definition:Id [color=seagreen4];
+
+  DefinitionLink:TypeId -> DefinitionLinkType:Id [color=darkolivegreen];
+
+  Instance:LanguageId -> Language:Id [color=chocolate4];
+  Lexica:LanguageId -> Language:Id [color=chocolate4];
+
+  Instance:UserId -> User:Id [color=darkolivegreen];
+
+  WordlistItem:WordlistId -> Wordlist:Id [color=darkolivegreen];
+}

@@ -242,4 +242,6 @@ func (t TaiwaneseMandarinTokenizer) Tokenize(r io.Reader) (*Corpus, error) {
 
 	}
 
+	return corpus, nil
+
 }

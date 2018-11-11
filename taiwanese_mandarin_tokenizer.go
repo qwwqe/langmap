@@ -48,25 +48,6 @@ type TaiwaneseMandarinTokenizer struct {
 	lexicon *Trie
 }
 
-type wordSequence struct {
-	words []string
-}
-
-func (seq wordSequence) numWords() {
-	return len(seq.words)
-}
-
-func (seq wordSequence) numBytes() {
-	count := 0
-	for _, word := range seq.wordSequence {
-		count += len(word)
-	}
-}
-
-func (seq wordSequence) addWord(w string) {
-
-}
-
 // (t TaiwaneseMandarinTokenizer) LoadLexicon builds a lexicon Trie from a stream of <word, frequency> pairs
 func (t TaiwaneseMandarinTokenizer) LoadLexicon(s *Scanner) error {
 	if t.lexicon == nil {
